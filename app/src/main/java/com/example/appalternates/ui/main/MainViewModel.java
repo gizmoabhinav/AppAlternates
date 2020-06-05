@@ -79,9 +79,9 @@ public class MainViewModel extends ViewModel {
                     imageList = imageElement.getChildNodes();
 
                     if (isPackageInstalled((idList.item(0)).getNodeValue(), pm)) {
-                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " installed", uri+(imageList.item(0)).getNodeValue()});
+                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " installed", uri+(imageList.item(0)).getNodeValue(), (idList.item(0)).getNodeValue()});
                     } else {
-                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " not installed", uri+(imageList.item(0)).getNodeValue()});
+                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " not installed", uri+(imageList.item(0)).getNodeValue(), (idList.item(0)).getNodeValue()});
                     }
 
                 }
