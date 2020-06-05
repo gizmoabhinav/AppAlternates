@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appalternates.ui.main.AppListAdapter;
 import com.example.appalternates.ui.main.AppListViewModel;
 import com.inmobi.ads.InMobiAdRequestStatus;
+import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 
@@ -44,8 +45,8 @@ public class AppListActivity extends AppCompatActivity {
         AppListAdapter mAdapter = new AppListAdapter(mAppList);
         recyclerView.setAdapter(mAdapter);
 
-//        InMobiBanner bannerAd = findViewById(R.id.banner);
-//        bannerAd.load();
+        InMobiBanner bannerAd = findViewById(R.id.banner);
+        bannerAd.load();
         mViewModel.fetchLatestList(mAppList, mAdapter, this.getPackageManager());
         InterstitialAdEventListener mInterstitialAdEventListener = new adListener();
         interstitialAd = new InMobiInterstitial(AppListActivity.this, 1593117041651L, mInterstitialAdEventListener);
@@ -105,7 +106,7 @@ public class AppListActivity extends AppCompatActivity {
         }
 
         public void onRewardsUnlocked(InMobiInterstitial var1, Map<Object, Object> var2) {
-            finish();
+            //finish();
         }
 
         public void onRequestPayloadCreated(byte[] var1) {
