@@ -55,7 +55,7 @@ public class AppListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (adLoaded) {
-            interstitialAd.show();
+//            interstitialAd.show();
         } else {
             super.onBackPressed();
         }
@@ -73,7 +73,7 @@ public class AppListActivity extends AppCompatActivity {
 
         public void onAdLoadSucceeded(InMobiInterstitial var1) {
 
-            interstitialAd.show();
+//            interstitialAd.show();
         }
 
         public void onAdLoadFailed(InMobiInterstitial var1, InMobiAdRequestStatus var2) {
