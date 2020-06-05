@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appalternates.ui.main.AppListAdapter;
 import com.example.appalternates.ui.main.AppListViewModel;
+import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
@@ -72,8 +73,7 @@ public class AppListActivity extends AppCompatActivity {
         public adListener() {
         }
 
-        public void onAdLoadSucceeded(InMobiInterstitial var1) {
-
+        public void onAdLoadSucceeded(InMobiInterstitial var1, AdMetaInfo var2) {
             interstitialAd.show();
         }
 
