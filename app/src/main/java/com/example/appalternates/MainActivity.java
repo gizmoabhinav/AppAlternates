@@ -48,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
                 if (null != error) {
                     Log.e("", "InMobi Init failed -" + error.getMessage());
                 } else {
+                    InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+                    InMobiBanner bannerAd = findViewById(R.id.bannermain);
+                    bannerAd.load();
                     Log.d("", "InMobi Init Successful");
                 }
             }
         });
-        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-        InMobiBanner bannerAd = findViewById(R.id.banner);
-        bannerAd.load();
-        
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

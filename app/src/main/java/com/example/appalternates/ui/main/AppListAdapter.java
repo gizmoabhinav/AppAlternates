@@ -1,5 +1,7 @@
 package com.example.appalternates.ui.main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,9 +48,19 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position).name);
         Glide.with(holder.view.getContext()).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(
+                        "https://play.google.com/store/apps/details?id="+mDataset.get(position).id));
+                intent.setPackage("com.android.vending");
+                holder.view.getContext().startActivity(intent);
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

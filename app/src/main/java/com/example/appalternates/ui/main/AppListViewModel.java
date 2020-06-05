@@ -23,9 +23,11 @@ public class AppListViewModel extends ViewModel {
     public static class DetectedAppViewModel {
         String iconUri;
         String name;
-        DetectedAppViewModel(String appName, String uri){
+        String id;
+        DetectedAppViewModel(String id, String appName, String uri){
             iconUri = uri;
             name = appName;
+            this.id  = id;
         }
     }
 
@@ -88,7 +90,8 @@ public class AppListViewModel extends ViewModel {
                     imageList = imageElement.getChildNodes();
 
                     if (isPackageInstalled((idList.item(0)).getNodeValue(), pm)) {
-                        list.add(new DetectedAppViewModel((String)(nameList.item(0)).getNodeValue(),
+                        list.add(new DetectedAppViewModel((idList.item(0)).getNodeValue(),
+                                (nameList.item(0)).getNodeValue(),
                                 uri+(imageList.item(0)).getNodeValue()));
                     }
 
