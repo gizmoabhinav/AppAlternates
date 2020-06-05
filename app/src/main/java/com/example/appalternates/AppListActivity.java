@@ -2,12 +2,17 @@ package com.example.appalternates;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.appalternates.ui.main.MainFragment;
+import com.example.appalternates.ui.main.AppListAdapter;
+import com.example.appalternates.ui.main.AppListViewModel;
 import com.inmobi.ads.InMobiAdRequestStatus;
+import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 import com.inmobi.sdk.InMobiSdk;
@@ -15,6 +20,8 @@ import com.inmobi.sdk.SdkInitializationListener;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -31,11 +38,21 @@ public class AppListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_list_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow();
-        }
+        AppListViewModel mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
+        RecyclerView recyclerView = findViewById(R.id.app_list);
+
+        // use a linear layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<AppListViewModel.DetectedAppViewModel> mAppList = new ArrayList<>();
+
+        // specify an adapter (see also next example)
+        AppListAdapter mAdapter = new AppListAdapter(mAppList);
+        recyclerView.setAdapter(mAdapter);
+
+//        InMobiBanner bannerAd = findViewById(R.id.banner);
+//        bannerAd.load();
+        mViewModel.fetchLatestList(mAppList, mAdapter, this.getPackageManager());
         JSONObject consentObject = new JSONObject();
         /*
         try {

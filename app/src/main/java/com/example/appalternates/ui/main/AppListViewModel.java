@@ -18,10 +18,18 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class MainViewModel extends ViewModel {
+public class AppListViewModel extends ViewModel {
 
+    public static class DetectedAppViewModel {
+        String iconUri;
+        String name;
+        DetectedAppViewModel(String appName, String uri){
+            iconUri = uri;
+            name = appName;
+        }
+    }
 
-    public void fetchLatestList(List<String[]> applist, AppListAdapter adapter, PackageManager pm) {
+    public void fetchLatestList(List<DetectedAppViewModel> applist, AppListAdapter adapter, PackageManager pm) {
         LatestFetcher fetcher = new LatestFetcher(applist, adapter, pm);
         fetcher.execute();
     }
@@ -35,24 +43,25 @@ public class MainViewModel extends ViewModel {
         }
     }
 
-    static class LatestFetcher extends AsyncTask<Object, Object, List<String[]>> {
+    static class LatestFetcher extends AsyncTask<Object, Object, List<DetectedAppViewModel>> {
 
         private String uri = "https://gizmoabhinav.github.io";
         AppListAdapter adapter;
-        List<String[]> applist;
+        List<DetectedAppViewModel> applist;
         PackageManager pm;
-        LatestFetcher(List<String[]> applist, AppListAdapter adapter, PackageManager pm) {
+
+        LatestFetcher(List<DetectedAppViewModel> applist, AppListAdapter adapter, PackageManager pm) {
             this.applist = applist;
             this.pm = pm;
             this.adapter = adapter;
         }
 
         @Override
-        protected List<String[]> doInBackground(Object... objects) {
+        protected List<DetectedAppViewModel> doInBackground(Object... objects) {
 
-            ArrayList<String[]> list = new ArrayList<>();
+            ArrayList<DetectedAppViewModel> list = new ArrayList<>();
             try {
-                URL url = new URL(uri+"/apps.xml");
+                URL url = new URL(uri + "/apps.xml");
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new InputSource(url.openStream()));
@@ -79,9 +88,8 @@ public class MainViewModel extends ViewModel {
                     imageList = imageElement.getChildNodes();
 
                     if (isPackageInstalled((idList.item(0)).getNodeValue(), pm)) {
-                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " installed", uri+(imageList.item(0)).getNodeValue()});
-                    } else {
-                        list.add(new String[]{(nameList.item(0)).getNodeValue()+ " not installed", uri+(imageList.item(0)).getNodeValue()});
+                        list.add(new DetectedAppViewModel((String)(nameList.item(0)).getNodeValue(),
+                                uri+(imageList.item(0)).getNodeValue()));
                     }
 
                 }
@@ -92,10 +100,10 @@ public class MainViewModel extends ViewModel {
         }
 
         @Override
-        protected void onPostExecute(List<String[]> result) {
+        protected void onPostExecute(List<DetectedAppViewModel> result) {
             applist.clear();
             applist.addAll(result);
-            adapter.notifyItemRangeInserted(0,result.size());
+            adapter.notifyItemRangeInserted(0, result.size());
         }
     }
 }

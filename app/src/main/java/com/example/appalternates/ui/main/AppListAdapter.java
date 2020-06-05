@@ -14,7 +14,7 @@ import com.example.appalternates.R;
 import java.util.List;
 
 public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHolder> {
-    private List<String[]> mDataset;
+    private List<AppListViewModel.DetectedAppViewModel> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -29,7 +29,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AppListAdapter(List<String[]> myDataset) {
+    public AppListAdapter(List<AppListViewModel.DetectedAppViewModel> myDataset) {
         mDataset = myDataset;
     }
 
@@ -47,8 +47,8 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position)[0]);
-        Glide.with(holder.view.getContext()).load(mDataset.get(position)[1]).into((ImageView)holder.view.findViewById(R.id.image));
+        ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position).name);
+        Glide.with(holder.view.getContext()).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

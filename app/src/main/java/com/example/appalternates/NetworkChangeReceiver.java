@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.appalternates.ui.main.MainFragment;
-
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
     @Override
@@ -18,7 +16,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
                 try{
                     AppListActivity.getInstance().loadAd();
-                    MainFragment.getInstance().loadAd();
                 } catch (Exception e) {
 
                 }
