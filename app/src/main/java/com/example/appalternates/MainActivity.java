@@ -25,11 +25,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mActivity = this;
-        FloatingActionButton fab = findViewById(R.id.scanButton);
         JSONObject consentObject = new JSONObject();
         /*
         try {
@@ -48,14 +43,19 @@ public class MainActivity extends AppCompatActivity {
                 if (null != error) {
                     Log.e("", "InMobi Init failed -" + error.getMessage());
                 } else {
-                    InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-                    //InMobiBanner bannerAd = findViewById(R.id.bannermain);
-                    //bannerAd.load();
                     Log.d("", "InMobi Init Successful");
                 }
             }
         });
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mActivity = this;
+        FloatingActionButton fab = findViewById(R.id.scanButton);
 
+        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+        InMobiBanner bannerAd = findViewById(R.id.bannermain);
+        bannerAd.load();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
