@@ -74,7 +74,7 @@ public class AppListActivity extends AppCompatActivity {
         }
 
         public void onAdLoadSucceeded(InMobiInterstitial var1, AdMetaInfo var2) {
-            interstitialAd.show();
+            //interstitialAd.show();
         }
 
         public void onAdLoadFailed(InMobiInterstitial var1, InMobiAdRequestStatus var2) {
