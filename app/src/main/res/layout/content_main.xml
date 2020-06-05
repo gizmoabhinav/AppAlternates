@@ -61,7 +61,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </FrameLayout>
 
-    <com.inmobi.ads.InMobiBanner
+    <!--<com.inmobi.ads.InMobiBanner
         android:id="@+id/bannermain"
         ads:placementId="plid-1591987009038"
         ads:refreshInterval="60"
@@ -70,5 +70,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frame"/>
+        app:layout_constraintTop_toBottomOf="@id/frame" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
