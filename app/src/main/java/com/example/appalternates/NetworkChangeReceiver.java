@@ -17,7 +17,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
             if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
                 try{
-                    MainActivity.getInstance().loadAd();
+                    AppListActivity.getInstance().loadAd();
                     MainFragment.getInstance().loadAd();
                 } catch (Exception e) {
 
