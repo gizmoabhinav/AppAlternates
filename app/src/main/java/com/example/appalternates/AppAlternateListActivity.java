@@ -1,14 +1,14 @@
 package com.example.appalternates;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.appalternates.ui.main.AppListAdapter;
+import com.example.appalternates.ui.main.AppAlternateListAdapter;
 import com.example.appalternates.ui.main.AppListViewModel;
 import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
@@ -20,38 +20,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AppListActivity extends AppCompatActivity {
+public class AppAlternateListActivity extends AppCompatActivity {
 
     private InMobiInterstitial interstitialAd;
     private boolean adLoaded = false;
-    private static AppListActivity instance;
+    private static AppAlternateListActivity instance;
 
-    public static AppListActivity getInstance() {
+    public static AppAlternateListActivity getInstance() {
         return instance;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_list_activity);
-        AppListViewModel mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
+        setContentView(R.layout.app_alternate_list_activity);
         RecyclerView recyclerView = findViewById(R.id.app_list);
 
         // use a linear layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<AppListViewModel.DetectedAppViewModel> mAppList = new ArrayList<>();
+        Intent intent = getIntent();
+        List<AppListViewModel.AlternateAppViewModel> mAppList = intent.getParcelableArrayListExtra("alternateApps");
         instance = this;
 
         // specify an adapter (see also next example)
-        AppListAdapter mAdapter = new AppListAdapter(mAppList, instance);
+        AppAlternateListAdapter mAdapter = new AppAlternateListAdapter(mAppList, instance);
         recyclerView.setAdapter(mAdapter);
 
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
-        mViewModel.fetchLatestList(mAppList, mAdapter, this.getPackageManager());
         InterstitialAdEventListener mInterstitialAdEventListener = new adListener();
-        interstitialAd = new InMobiInterstitial(AppListActivity.this, 1593117041651L, mInterstitialAdEventListener);
+        interstitialAd = new InMobiInterstitial(AppAlternateListActivity.this, 1593117041651L, mInterstitialAdEventListener);
         interstitialAd.load();
     }
 

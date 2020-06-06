@@ -39,9 +39,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".AppListActivity">
-
-        </activity>
+        <activity android:name=".AppListActivity"/>
+        <activity android:name=".AppAlternateListActivity"/>
     </application>
 
 </manifest>

@@ -2,7 +2,10 @@ package com.example.appalternates.ui.main;
 
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import org.w3c.dom.Document;
@@ -24,10 +27,60 @@ public class AppListViewModel extends ViewModel {
         String iconUri;
         String name;
         String id;
+        ArrayList<AlternateAppViewModel> alternateApps;
         DetectedAppViewModel(String id, String appName, String uri){
             iconUri = uri;
             name = appName;
             this.id  = id;
+            alternateApps = new ArrayList<>();
+        }
+        public void addApp (AlternateAppViewModel app) {
+            alternateApps.add(app);
+        }
+    }
+
+    public static class AlternateAppViewModel implements Parcelable {
+        String iconUri;
+        String name;
+        String id;
+        boolean isIndian;
+        AlternateAppViewModel(String id, String appName, String uri, boolean isIndian){
+            iconUri = uri;
+            name = appName;
+            this.id  = id;
+            this.isIndian = isIndian;
+        }
+
+        protected AlternateAppViewModel(Parcel in) {
+            name = in.readString();
+            id = in.readString();
+            iconUri = in.readString();
+            isIndian = in.readByte() != 0;
+        }
+
+        public static final Creator<AlternateAppViewModel> CREATOR = new Creator<AlternateAppViewModel>() {
+            @Override
+            public AlternateAppViewModel createFromParcel(Parcel in) {
+                return new AlternateAppViewModel(in);
+            }
+
+            @Override
+            public AlternateAppViewModel[] newArray(int size) {
+                return new AlternateAppViewModel[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(name);
+            parcel.writeString(id);
+            parcel.writeString(iconUri);
+            parcel.writeByte(isIndian?(byte)1:(byte)0);
         }
     }
 
@@ -90,9 +143,67 @@ public class AppListViewModel extends ViewModel {
                     imageList = imageElement.getChildNodes();
 
                     if (isPackageInstalled((idList.item(0)).getNodeValue(), pm)) {
-                        list.add(new DetectedAppViewModel((idList.item(0)).getNodeValue(),
+
+                        DetectedAppViewModel detectedApp = new DetectedAppViewModel((idList.item(0)).getNodeValue(),
                                 (nameList.item(0)).getNodeValue(),
-                                uri+(imageList.item(0)).getNodeValue()));
+                                uri+(imageList.item(0)).getNodeValue());
+
+                        NodeList indiaAlternate = fstElmnt.getElementsByTagName("alternate-india");
+
+                        for (int j = 0; j < indiaAlternate.getLength(); j++) {
+                            Node alternatenode = indiaAlternate.item(j);
+
+                            Element element = (Element) alternatenode;
+
+                            NodeList name = element.getElementsByTagName("name");
+                            Element nameElement1 = (Element) name.item(0);
+                            name = nameElement1.getChildNodes();
+
+                            NodeList id = element.getElementsByTagName("id");
+                            Element idelement = (Element) id.item(0);
+                            id = idelement.getChildNodes();
+
+                            NodeList image = element.getElementsByTagName("image");
+                            Element img = (Element) image.item(0);
+                            image = img.getChildNodes();
+
+                            AlternateAppViewModel alternateApp = new AlternateAppViewModel((id.item(0)).getNodeValue(),
+                                    (name.item(0)).getNodeValue(),
+                                    uri+(image.item(0)).getNodeValue(),
+                                    true);
+
+                            detectedApp.addApp(alternateApp);
+                        }
+
+                        NodeList otherAlternate = fstElmnt.getElementsByTagName("alternate");
+
+                        for (int j = 0; j < otherAlternate.getLength(); j++) {
+                            Node alternatenode = otherAlternate.item(j);
+
+                            Element element = (Element) alternatenode;
+
+                            NodeList name = element.getElementsByTagName("name");
+                            Element nameElement1 = (Element) name.item(0);
+                            name = nameElement1.getChildNodes();
+
+                            NodeList id = element.getElementsByTagName("id");
+                            Element idelement = (Element) id.item(0);
+                            id = idelement.getChildNodes();
+
+                            NodeList image = element.getElementsByTagName("image");
+                            Element img = (Element) image.item(0);
+                            image = img.getChildNodes();
+
+                            AlternateAppViewModel alternateApp = new AlternateAppViewModel((id.item(0)).getNodeValue(),
+                                    (name.item(0)).getNodeValue(),
+                                    uri+(image.item(0)).getNodeValue(),
+                                    true);
+
+                            detectedApp.addApp(alternateApp);
+                        }
+
+
+                        list.add(detectedApp);
                     }
 
                 }

@@ -12,14 +12,13 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.appalternates.AppAlternateListActivity;
+import com.example.appalternates.AppListActivity;
 import com.example.appalternates.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHolder> {
-    private ArrayList<AppListViewModel.DetectedAppViewModel> mDataset;
+public class AppAlternateListAdapter extends RecyclerView.Adapter<AppAlternateListAdapter.MyViewHolder> {
+    private List<AppListViewModel.AlternateAppViewModel> mDataset;
     private Activity mActivity;
 
     // Provide a reference to the views for each data item
@@ -35,18 +34,18 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AppListAdapter(ArrayList<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity) {
+    public AppAlternateListAdapter(List<AppListViewModel.AlternateAppViewModel> myDataset, Activity activity) {
         mDataset = myDataset;
         mActivity = activity;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public AppListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public AppAlternateListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                   int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.app_row, parent, false);
+                .inflate(R.layout.app_alternate_row, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
@@ -55,7 +54,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position).name);
-        Glide.with(mActivity).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
+        Glide.with(holder.view.getContext()).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,19 +65,6 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
                 holder.view.getContext().startActivity(intent);
             }
         });
-        if (mDataset.get(position).alternateApps.size() > 0) {
-            holder.view.findViewById(R.id.alternate_button).setVisibility(View.VISIBLE);
-            holder.view.findViewById(R.id.alternate_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mActivity, AppAlternateListActivity.class);
-                    intent.putParcelableArrayListExtra("alternateApps", mDataset.get(position).alternateApps);
-                    mActivity.startActivity(intent);
-                }
-            });
-        } else {
-            holder.view.findViewById(R.id.alternate_button).setVisibility(View.INVISIBLE);
-        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
