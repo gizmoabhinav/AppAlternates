@@ -15,7 +15,7 @@
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="This can help you in detecting all the chinese app installed in your device"
+        android:text="@string/main_text"
         android:textSize="20sp"
         android:id="@+id/MainInfoText"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,10 +29,20 @@
         android:layout_marginTop="20dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="Click the scan button to start scanning"
+        android:text="@string/scan_help"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/MainInfoText"
          />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf ="@+id/subtext"
+        app:layout_constraintBottom_toTopOf ="@+id/frame" />
+
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="wrap_content"
@@ -53,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Scan"
+            android:text="@string/scan"
             android:textSize="16sp"
             android:elevation="16dp"
             android:textColor="@android:color/white"

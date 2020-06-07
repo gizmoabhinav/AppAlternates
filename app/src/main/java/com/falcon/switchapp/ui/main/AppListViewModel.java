@@ -1,11 +1,10 @@
-package com.example.appalternates.ui.main;
+package com.falcon.switchapp.ui.main;
 
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import org.w3c.dom.Document;
@@ -27,11 +26,13 @@ public class AppListViewModel extends ViewModel {
         String iconUri;
         String name;
         String id;
+        String description;
         ArrayList<AlternateAppViewModel> alternateApps;
-        DetectedAppViewModel(String id, String appName, String uri){
+        DetectedAppViewModel(String id, String appName, String uri, String description){
             iconUri = uri;
             name = appName;
             this.id  = id;
+            this.description = description;
             alternateApps = new ArrayList<>();
         }
         public void addApp (AlternateAppViewModel app) {
@@ -43,17 +44,20 @@ public class AppListViewModel extends ViewModel {
         String iconUri;
         String name;
         String id;
+        String description;
         boolean isIndian;
-        AlternateAppViewModel(String id, String appName, String uri, boolean isIndian){
+        AlternateAppViewModel(String id, String appName, String uri, String description, boolean isIndian){
             iconUri = uri;
             name = appName;
             this.id  = id;
+            this.description = description;
             this.isIndian = isIndian;
         }
 
         protected AlternateAppViewModel(Parcel in) {
             name = in.readString();
             id = in.readString();
+            description = in.readString();
             iconUri = in.readString();
             isIndian = in.readByte() != 0;
         }
@@ -79,6 +83,7 @@ public class AppListViewModel extends ViewModel {
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeString(name);
             parcel.writeString(id);
+            parcel.writeString(description);
             parcel.writeString(iconUri);
             parcel.writeByte(isIndian?(byte)1:(byte)0);
         }
@@ -142,11 +147,20 @@ public class AppListViewModel extends ViewModel {
                     Element imageElement = (Element) imageList.item(0);
                     imageList = imageElement.getChildNodes();
 
+                    NodeList descriptionList = fstElmnt.getElementsByTagName("description");
+                    String desc = "";
+                    if (descriptionList.getLength()>0) {
+                        Element descElement = (Element) descriptionList.item(0);
+                        descriptionList = descElement.getChildNodes();
+                        desc = (descriptionList.item(0)).getNodeValue();
+                    }
+
                     if (isPackageInstalled((idList.item(0)).getNodeValue(), pm)) {
 
                         DetectedAppViewModel detectedApp = new DetectedAppViewModel((idList.item(0)).getNodeValue(),
                                 (nameList.item(0)).getNodeValue(),
-                                uri+(imageList.item(0)).getNodeValue());
+                                uri+(imageList.item(0)).getNodeValue(),
+                                desc);
 
                         NodeList indiaAlternate = fstElmnt.getElementsByTagName("alternate-india");
 
@@ -167,9 +181,18 @@ public class AppListViewModel extends ViewModel {
                             Element img = (Element) image.item(0);
                             image = img.getChildNodes();
 
+                            NodeList descList = element.getElementsByTagName("description");
+                            String desc1 = "";
+                            if (descList.getLength()>0) {
+                                Element descElement = (Element) descList.item(0);
+                                descList = descElement.getChildNodes();
+                                desc1 = (descList.item(0)).getNodeValue();
+                            }
+
                             AlternateAppViewModel alternateApp = new AlternateAppViewModel((id.item(0)).getNodeValue(),
                                     (name.item(0)).getNodeValue(),
                                     uri+(image.item(0)).getNodeValue(),
+                                    desc1,
                                     true);
 
                             detectedApp.addApp(alternateApp);
@@ -194,9 +217,18 @@ public class AppListViewModel extends ViewModel {
                             Element img = (Element) image.item(0);
                             image = img.getChildNodes();
 
+                            NodeList descList = element.getElementsByTagName("description");
+                            String desc1 = "";
+                            if (descriptionList.getLength()>0) {
+                                Element descElement = (Element) descList.item(0);
+                                descList = descElement.getChildNodes();
+                                desc1 = (descList.item(0)).getNodeValue();
+                            }
+
                             AlternateAppViewModel alternateApp = new AlternateAppViewModel((id.item(0)).getNodeValue(),
                                     (name.item(0)).getNodeValue(),
                                     uri+(image.item(0)).getNodeValue(),
+                                    desc1,
                                     true);
 
                             detectedApp.addApp(alternateApp);

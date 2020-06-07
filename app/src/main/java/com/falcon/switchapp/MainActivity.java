@@ -1,11 +1,11 @@
-package com.example.appalternates;
+package com.falcon.switchapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.sdk.InMobiSdk;
 import com.inmobi.sdk.SdkInitializationListener;
@@ -16,11 +16,17 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     Activity mActivity;
+    private Spinner spinner;
+    FloatingActionButton fab;
+    private static final String[] paths = {"China", "India", "USA"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +54,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         mActivity = this;
-        FloatingActionButton fab = findViewById(R.id.scanButton);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity,
+                android.R.layout.simple_spinner_item,paths);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        //spinner.setOnItemSelectedListener(this);
+        setSupportActionBar(toolbar);
+        fab = findViewById(R.id.scanButton);
 
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
         InMobiBanner bannerAd = findViewById(R.id.bannermain);

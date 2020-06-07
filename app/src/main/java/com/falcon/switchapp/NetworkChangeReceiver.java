@@ -1,4 +1,4 @@
-package com.example.appalternates;
+package com.falcon.switchapp;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

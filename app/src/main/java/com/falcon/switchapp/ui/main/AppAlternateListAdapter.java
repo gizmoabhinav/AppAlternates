@@ -1,4 +1,4 @@
-package com.example.appalternates.ui.main;
+package com.falcon.switchapp.ui.main;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.appalternates.AppListActivity;
-import com.example.appalternates.R;
+import com.falcon.switchapp.R;
 
 import java.util.List;
 
@@ -54,6 +53,7 @@ public class AppAlternateListAdapter extends RecyclerView.Adapter<AppAlternateLi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position).name);
+        ((TextView)holder.view.findViewById(R.id.description)).setText(mDataset.get(position).description);
         Glide.with(holder.view.getContext()).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override

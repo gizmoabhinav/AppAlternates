@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.example.appalternates">
+    package="com.falcon.switchapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.falcon.switchapp.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -31,7 +31,7 @@
         </activity>
 
         <receiver
-            android:name=".NetworkChangeReceiver"
+            android:name="com.falcon.switchapp.NetworkChangeReceiver"
             android:label="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -39,8 +39,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".AppListActivity"/>
-        <activity android:name=".AppAlternateListActivity"/>
+        <activity android:name="com.falcon.switchapp.AppListActivity"
+            android:label="@string/title_app_list_activity"/>
+        <activity android:name="com.falcon.switchapp.AppAlternateListActivity"
+            android:label="@string/title_alternate_activity"/>
     </application>
 
 </manifest>

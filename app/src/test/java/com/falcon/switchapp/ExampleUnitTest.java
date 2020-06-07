@@ -1,4 +1,4 @@
-package com.example.appalternates;
+package com.falcon.switchapp;
 
 import org.junit.Test;
 
