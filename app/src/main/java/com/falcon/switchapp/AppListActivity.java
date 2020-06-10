@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.falcon.switchapp.ui.main.AppListAdapter;
 import com.falcon.switchapp.ui.main.AppListViewModel;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
@@ -46,6 +48,10 @@ public class AppListActivity extends AppCompatActivity {
         AppListAdapter mAdapter = new AppListAdapter(mAppList, instance);
         recyclerView.setAdapter(mAdapter);
 
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
         mViewModel.fetchLatestList(mAppList, mAdapter, this.getPackageManager());

@@ -5,6 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.sdk.InMobiSdk;
@@ -31,6 +36,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
         JSONObject consentObject = new JSONObject();
         /*
         try {
@@ -54,6 +65,11 @@ public class MainActivity extends AppCompatActivity{
             }
         });
         setContentView(R.layout.activity_main);
+
+
+        AdView mAdView = findViewById(R.id.adViewMain);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         mActivity = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         spinner = (Spinner)findViewById(R.id.spinner);
