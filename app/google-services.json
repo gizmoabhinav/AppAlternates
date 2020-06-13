@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "392520512627",
+    "firebase_url": "https://switchapp-513b1.firebaseio.com",
+    "project_id": "switchapp-513b1",
+    "storage_bucket": "switchapp-513b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392520512627:android:31dbc67b1651eadbea6606",
+        "android_client_info": {
+          "package_name": "com.falcon.switchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392520512627-8vhlv4249no9a3e98ll2m71qgo0uiolb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvYvZ_xOrqGpG4X3Rc6GlwwPQqO7hHFv0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392520512627-8vhlv4249no9a3e98ll2m71qgo0uiolb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
