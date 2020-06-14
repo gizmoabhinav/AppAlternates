@@ -22,6 +22,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class AppListViewModel extends ViewModel {
 
+    public List<DetectedAppViewModel> getApplist() {
+        return applist;
+    }
+
+    public interface IOnLoadCallback {
+        void onLoad();
+    }
+
     public static class DetectedAppViewModel {
         String iconUri;
         String name;
@@ -46,6 +54,7 @@ public class AppListViewModel extends ViewModel {
         String id;
         String description;
         boolean isIndian;
+
         AlternateAppViewModel(String id, String appName, String uri, String description, boolean isIndian){
             iconUri = uri;
             name = appName;
@@ -89,8 +98,8 @@ public class AppListViewModel extends ViewModel {
         }
     }
 
-    public void fetchLatestList(List<DetectedAppViewModel> applist, AppListAdapter adapter, PackageManager pm) {
-        LatestFetcher fetcher = new LatestFetcher(applist, adapter, pm);
+    public void fetchLatestList(PackageManager pm, IOnLoadCallback callback) {
+        LatestFetcher fetcher = new LatestFetcher(applist, pm, callback);
         fetcher.execute();
     }
 
@@ -103,17 +112,19 @@ public class AppListViewModel extends ViewModel {
         }
     }
 
+    private List<DetectedAppViewModel> applist = new ArrayList<>();
+
     static class LatestFetcher extends AsyncTask<Object, Object, List<DetectedAppViewModel>> {
 
         private String uri = "https://gizmoabhinav.github.io";
-        AppListAdapter adapter;
         List<DetectedAppViewModel> applist;
         PackageManager pm;
+        IOnLoadCallback callback;
 
-        LatestFetcher(List<DetectedAppViewModel> applist, AppListAdapter adapter, PackageManager pm) {
-            this.applist = applist;
+        LatestFetcher(List<DetectedAppViewModel> applist, PackageManager pm, IOnLoadCallback callback) {
             this.pm = pm;
-            this.adapter = adapter;
+            this.callback = callback;
+            this.applist = applist;
         }
 
         @Override
@@ -249,7 +260,7 @@ public class AppListViewModel extends ViewModel {
         protected void onPostExecute(List<DetectedAppViewModel> result) {
             applist.clear();
             applist.addAll(result);
-            adapter.notifyItemRangeInserted(0, result.size());
+            callback.onLoad();
         }
     }
 }

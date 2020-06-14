@@ -15,6 +15,7 @@
         android:layout_margin="8dp"
         android:scrollbars="vertical"
         app:layout_constraintTop_toTopOf="parent" />
+
     <include layout="@layout/no_app_detected"/>
 
     <com.inmobi.ads.InMobiBanner

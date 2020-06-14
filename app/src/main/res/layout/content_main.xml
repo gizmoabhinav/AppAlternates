@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
+        android:id="@+id/MainInfoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -17,7 +18,6 @@
         android:paddingEnd="16dp"
         android:text="@string/main_text"
         android:textSize="20sp"
-        android:id="@+id/MainInfoText"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="40dp" />
 
@@ -25,48 +25,75 @@
         android:id="@+id/subtext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:text="@string/scan_help"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/MainInfoText"
-         />
+        app:layout_constraintTop_toBottomOf="@id/MainInfoText" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf ="@+id/subtext"
-        app:layout_constraintBottom_toTopOf ="@+id/frame" />
+        app:layout_constraintTop_toBottomOf="@+id/subtext" />
 
     <FrameLayout
-        android:id="@+id/frame"
+        android:id="@+id/disabledButtonFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/subtext"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintTop_toTopOf="@id/subtext">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:backgroundTint="#0078D4"
-            android:id="@+id/scanButton"
             android:layout_margin="24dp"
-            />
+            app:backgroundTint="#98A3AF" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="16dp"
+            android:text="@string/coming_soon"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/ScanButtonFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/subtext">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/scanButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="24dp"
+            app:backgroundTint="#0078D4" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/scan"
-            android:textSize="16sp"
             android:elevation="16dp"
+            android:text="@string/scan"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textSize="16sp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

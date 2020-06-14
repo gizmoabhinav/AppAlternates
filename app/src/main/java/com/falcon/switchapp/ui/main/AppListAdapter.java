@@ -16,9 +16,10 @@ import com.falcon.switchapp.AppAlternateListActivity;
 import com.falcon.switchapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHolder> {
-    private ArrayList<AppListViewModel.DetectedAppViewModel> mDataset;
+    private List<AppListViewModel.DetectedAppViewModel> mDataset;
     private Activity mActivity;
 
     // Provide a reference to the views for each data item
@@ -34,7 +35,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AppListAdapter(ArrayList<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity) {
+    public AppListAdapter(List<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity) {
         mDataset = myDataset;
         mActivity = activity;
     }

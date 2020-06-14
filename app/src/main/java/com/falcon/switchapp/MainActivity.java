@@ -24,17 +24,19 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     Activity mActivity;
     private Spinner spinner;
     FloatingActionButton fab;
     private static final String[] paths = {"China", "India", "USA"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,23 +77,44 @@ public class MainActivity extends AppCompatActivity{
         mAdView.loadAd(adRequest);
         mActivity = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
-        spinner = (Spinner)findViewById(R.id.spinner);
+        spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity,
-                android.R.layout.simple_spinner_item,paths);
+                R.layout.spinner_item, paths);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
-        //spinner.setOnItemSelectedListener(this);
-        setSupportActionBar(toolbar);
+
         fab = findViewById(R.id.scanButton);
+        final View disabledButtonFrame = findViewById(R.id.disabledButtonFrame);
+        final View scanButtonView = findViewById(R.id.ScanButtonFrame);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i != 0) {
+                    disabledButtonFrame.setVisibility(View.VISIBLE);
+                    scanButtonView.setVisibility(View.GONE);
+                } else {
+                    disabledButtonFrame.setVisibility(View.GONE);
+                    scanButtonView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        setSupportActionBar(toolbar);
 
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-        InMobiBanner bannerAd = findViewById(R.id.bannermain);
+        final InMobiBanner bannerAd = findViewById(R.id.bannermain);
         bannerAd.load();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 // TODO: KOKO call ad show before this.
+                bannerAd.load();
                 view.getContext().startActivity(new Intent(mActivity, AppListActivity.class));
             }
         });
