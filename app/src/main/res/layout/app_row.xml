@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_margin="4dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_notif"
@@ -21,27 +21,33 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toRightOf="@id/image"
         app:layout_constraintTop_toTopOf="parent"
         android:text="blah"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/textColor"
-        android:textSize="20sp" />
+        app:layout_constraintWidth_percent="0.6"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/secondaryTextColor"
         app:layout_constraintLeft_toRightOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/name"
-        android:textSize="16sp"
-        android:text="more blah blah blah"/>
+        app:layout_constraintWidth_percent="0.6"
+        android:textSize="12sp"
+        android:text="more blah blah blah blah blah blah blahjhdfkhe  bakhd akuf jegfu eyjwgr bvcyje"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/alternate_button"
@@ -64,7 +70,7 @@
     </androidx.cardview.widget.CardView>
 
     <View
-        app:layout_constraintTop_toBottomOf="@id/alternate_button"
+        app:layout_constraintTop_toBottomOf="@id/image"
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
