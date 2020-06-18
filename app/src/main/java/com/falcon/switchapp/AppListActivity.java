@@ -3,6 +3,10 @@ package com.falcon.switchapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -13,13 +17,13 @@ import com.falcon.switchapp.ui.main.AppListAdapter;
 import com.falcon.switchapp.ui.main.AppListViewModel;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.snackbar.Snackbar;
 import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -28,6 +32,9 @@ public class AppListActivity extends AppCompatActivity {
     private boolean adLoaded = false;
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
+
+    private static final String[] paths = {"China", "India", "USA"};
+    private int selectedCountry = 0;
 
     public static AppListActivity getInstance() {
         return instance;
@@ -49,13 +56,42 @@ public class AppListActivity extends AppCompatActivity {
             public void onLoad() {
                 if(mViewModel.getApplist().size() > 0) {
                     // specify an adapter (see also next example)
-                    findViewById(R.id.no_app_view).setVisibility(View.GONE);
+//                    findViewById(R.id.no_app_view).setVisibility(View.GONE);
                     AppListAdapter mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
                     recyclerView.setAdapter(mAdapter);
                 } else {
                     findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 }
+
+            }
+        });
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.spinner_item, paths);
+
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setAdapter(adapter);
+
+        final View scanButtonView = findViewById(R.id.searchButton);
+        scanButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedCountry != 0) {
+                    Toast.makeText(instance, getString(R.string.coming_soon), Toast.LENGTH_LONG).show();
+                } else {
+                }
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedCountry = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });

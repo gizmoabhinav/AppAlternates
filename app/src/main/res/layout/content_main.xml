@@ -8,18 +8,40 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <ImageView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="72dp"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/ic_notif"
+        android:id="@+id/appIcon"
+        android:layout_height="100dp"
+        android:layout_width="100dp"/>
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/appIcon"
+        android:layout_marginTop="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:textColor="@color/textColor"
+        android:textSize="22sp"
+        android:text="@string/welcome_message"/>
+
     <TextView
         android:id="@+id/MainInfoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/main_text"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="40dp" />
+        android:textColor="@color/textColor"
+        app:layout_constraintTop_toTopOf="@id/appIcon" />
 
     <TextView
         android:id="@+id/subtext"
@@ -29,49 +51,12 @@
         android:gravity="center"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
+        android:textColor="@color/secondaryTextColor"
         android:text="@string/scan_help"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/MainInfoText" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtext" />
-
     <FrameLayout
-        android:id="@+id/disabledButtonFrame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/subtext">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="24dp"
-            app:backgroundTint="#98A3AF" />
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="16dp"
-            android:text="@string/coming_soon"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/ScanButtonFrame"
+        android:id="@+id/scanButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,21 +64,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/subtext">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/scanButton"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="24dp"
-            app:backgroundTint="#0078D4" />
-
-        <TextView
+        <com.airbnb.lottie.LottieAnimationView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="16dp"
-            android:text="@string/scan"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            app:lottie_rawRes="@raw/scan"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

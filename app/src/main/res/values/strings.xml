@@ -8,4 +8,5 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="main_text">This app helps you get information about the apps on your device.\n You can find details about the company behind the app and also find alternate apps which have the same functionality.</string>
     <string name="app_free">You have no apps from China!</string>
+    <string name="welcome_message">Welcome to Switch App!</string>
 </resources>
