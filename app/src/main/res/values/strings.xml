@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Switch App</string>
     <string name="title_activity_main">Switch App</string>
-    <string name="title_app_list_activity">Apps from China</string>
+    <string name="title_app_list_activity">List of Apps</string>
     <string name="title_alternate_activity">Alternate apps</string>
     <string name="scan_help">Click the scan button to start scanning</string>
     <string name="coming_soon">Coming Soon</string>
