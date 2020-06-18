@@ -31,7 +31,7 @@ public class AppListViewModel extends ViewModel {
     }
 
     public interface IOnLoadCallback {
-        void onLoad();
+        void onLoad(List<DetectedAppViewModel> list);
     }
 
     public static class DetectedAppViewModel {
@@ -65,6 +65,7 @@ public class AppListViewModel extends ViewModel {
     }
 
     public enum Country {
+        All,
         China,
         India,
         USA
@@ -120,34 +121,67 @@ public class AppListViewModel extends ViewModel {
         }
     }
 
-    public void fetchLatestList(PackageManager pm, IOnLoadCallback callback) {
-        AppListFetcher fetcher = new AppListFetcher(applist, pm, callback);
-        fetcher.execute();
-    }
+
 
     private List<DetectedAppViewModel> applist = new ArrayList<>();
+    private List<DetectedAppViewModel> chineseApplist = new ArrayList<>();
+    private List<DetectedAppViewModel> indianApplist = new ArrayList<>();
+
+    public void fetchLatestList(PackageManager pm, IOnLoadCallback callback, Country country) {
+        switch (country) {
+            case India:
+                if (indianApplist.isEmpty()) {
+                    AppListFetcher fetcher = new AppListFetcher(applist, chineseApplist, indianApplist, pm, callback);
+                    fetcher.execute();
+                } else {
+                    callback.onLoad(indianApplist);
+                }
+                break;
+            case China:
+                if (chineseApplist.isEmpty()) {
+                    AppListFetcher fetcher = new AppListFetcher(applist, chineseApplist, indianApplist, pm, callback);
+                    fetcher.execute();
+                } else {
+                    callback.onLoad(chineseApplist);
+                }
+                break;
+            case All:
+            default:
+                if (applist.isEmpty()) {
+                    AppListFetcher fetcher = new AppListFetcher(applist, chineseApplist, indianApplist, pm, callback);
+                    fetcher.execute();
+                } else {
+                    callback.onLoad(applist);
+                }
+        }
+    }
 
     static class AppListFetcher extends AsyncTask<Object, Object, List<DetectedAppViewModel>> {
 
         List<DetectedAppViewModel> applist;
+        List<DetectedAppViewModel> chineseApps;
+        List<DetectedAppViewModel> indianApps;
         PackageManager pm;
         IOnLoadCallback callback;
 
-        AppListFetcher(List<DetectedAppViewModel> applist, PackageManager pm, IOnLoadCallback callback) {
+        AppListFetcher(List<DetectedAppViewModel> applist, List<DetectedAppViewModel> chineseApps, List<DetectedAppViewModel> indianApps, PackageManager pm, IOnLoadCallback callback) {
             this.pm = pm;
             this.callback = callback;
             this.applist = applist;
+            this.chineseApps = chineseApps;
+            this.indianApps = indianApps;
         }
 
         @Override
         protected List<DetectedAppViewModel> doInBackground(Object... objects) {
             List<PackageInfo> packageList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS);
+            chineseApps.clear();
+            indianApps.clear();
 
             HashMap<String, DetectedAppViewModel> map = getChineseApps();
 
             ArrayList<DetectedAppViewModel> list = new ArrayList<>();
             ArrayList<DetectedAppViewModel> nonChineseApps = new ArrayList<>();
-            ArrayList<DetectedAppViewModel> chineseApps = new ArrayList<>();
 
             /*To filter out System apps*/
             for(PackageInfo pi : packageList) {
@@ -180,9 +214,7 @@ public class AppListViewModel extends ViewModel {
 
         @Override
         protected void onPostExecute(List<DetectedAppViewModel> result) {
-            applist.clear();
-            applist.addAll(result);
-            callback.onLoad();
+            callback.onLoad(result);
         }
     }
 

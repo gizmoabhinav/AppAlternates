@@ -21,6 +21,8 @@ import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -29,6 +31,10 @@ public class AppListActivity extends AppCompatActivity {
     private boolean adLoaded = false;
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
+    private AlertDialog dialog;
+    private RecyclerView recyclerView;
+    private AppListAdapter mAdapter;
+    private List<AppListViewModel.DetectedAppViewModel> appList;
 
     public static AppListActivity getInstance() {
         return instance;
@@ -39,39 +45,43 @@ public class AppListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_list_activity);
 
-        final RecyclerView recyclerView = findViewById(R.id.app_list);
+        recyclerView = findViewById(R.id.app_list);
 
-        // use a linear layout manager
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
-        final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
-        mViewModel.fetchLatestList(this.getPackageManager(), new AppListViewModel.IOnLoadCallback() {
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        appList = new ArrayList<>();
+        mAdapter = new AppListAdapter(appList, instance);
+        recyclerView.setAdapter(mAdapter);
+
+        dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
+
+        dialog.show();
+
+
+        loadList(AppListViewModel.Country.All);
+
+        RadioGroup optionsGroup = findViewById(R.id.countryOptions);
+
+
+        optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
             @Override
-            public void onLoad() {
-                findViewById(R.id.app_content).setVisibility(View.VISIBLE);
-                dialog.cancel();
-                if(mViewModel.getApplist().size() > 0) {
-                    AppListAdapter mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
-                    ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
-                    recyclerView.setAdapter(mAdapter);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // find which radio button is selected
+                if (checkedId == R.id.all) {
+                    loadList(AppListViewModel.Country.All);
+                } else if (checkedId == R.id.china) {
+                    loadList(AppListViewModel.Country.China);
+                } else if (checkedId == R.id.india) {
+                    loadList(AppListViewModel.Country.India);
                 } else {
-                    findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
+                    Toast.makeText(instance, R.string.coming_soon, Toast.LENGTH_LONG).show();
                 }
             }
+
         });
-        dialog.show();
-        RadioGroup optionsGroup = findViewById(R.id.countryOptions);
-        int checkedButtonId = optionsGroup.getCheckedRadioButtonId();
-
-        if (checkedButtonId == R.id.all) {
-
-        } else if (checkedButtonId == R.id.china) {
-
-        } else {
-            Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_LONG).show();
-        }
 
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
@@ -84,7 +94,7 @@ public class AppListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (adLoaded) {
-//            interstitialAd.show();
+            interstitialAd.show();
         } else {
             super.onBackPressed();
         }
@@ -94,6 +104,25 @@ public class AppListActivity extends AppCompatActivity {
         if (!adLoaded) {
             interstitialAd.load();
         }
+    }
+
+    private void loadList(AppListViewModel.Country country) {
+        mViewModel.fetchLatestList(this.getPackageManager(), new AppListViewModel.IOnLoadCallback() {
+            @Override
+            public void onLoad(List<AppListViewModel.DetectedAppViewModel> list) {
+                appList.clear();
+                appList.addAll(list);
+                findViewById(R.id.app_content).setVisibility(View.VISIBLE);
+                dialog.cancel();
+                if(list.size() > 0) {
+                    ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
+                } else {
+                    findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+        }, country);
     }
 
     private class adListener extends InterstitialAdEventListener {
