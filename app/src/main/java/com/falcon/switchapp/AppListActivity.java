@@ -59,9 +59,6 @@ public class AppListActivity extends AppCompatActivity {
 
             }
         });
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
 
