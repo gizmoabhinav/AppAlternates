@@ -21,8 +21,6 @@ import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -43,6 +41,7 @@ public class AppListActivity extends AppCompatActivity {
         setContentView(R.layout.app_list_activity);
 
         final RecyclerView recyclerView = findViewById(R.id.app_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
