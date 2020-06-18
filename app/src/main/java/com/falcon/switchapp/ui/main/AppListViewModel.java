@@ -65,6 +65,7 @@ public class AppListViewModel extends ViewModel {
     }
 
     public enum Country {
+        All,
         China,
         India,
         USA

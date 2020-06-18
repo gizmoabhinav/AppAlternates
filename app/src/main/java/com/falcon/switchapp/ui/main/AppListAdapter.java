@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHolder> {
+    private List<AppListViewModel.DetectedAppViewModel> originalDataSet;
     private List<AppListViewModel.DetectedAppViewModel> mDataset;
     private Activity mActivity;
+    private AppListViewModel.Country mFilterByCountry;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -36,7 +38,8 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public AppListAdapter(List<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity) {
-        mDataset = myDataset;
+        originalDataSet = myDataset;
+        mDataset = new ArrayList<>(originalDataSet);
         mActivity = activity;
     }
 
@@ -90,5 +93,22 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public void setFilter(AppListViewModel.Country country)  {
+        if(country != mFilterByCountry) {
+            mFilterByCountry = country;
+            mDataset.clear();
+            if(country == AppListViewModel.Country.All) {
+                mDataset = new ArrayList<>(originalDataSet);
+            } else {
+                for (AppListViewModel.DetectedAppViewModel viewModel : originalDataSet) {
+                    if (viewModel.country == country) {
+                        mDataset.add(viewModel);
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        }
     }
 }

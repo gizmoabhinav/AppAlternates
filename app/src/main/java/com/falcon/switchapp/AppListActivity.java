@@ -29,6 +29,7 @@ public class AppListActivity extends AppCompatActivity {
     private boolean adLoaded = false;
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
+    private AppListAdapter mAdapter;
 
     public static AppListActivity getInstance() {
         return instance;
@@ -52,7 +53,7 @@ public class AppListActivity extends AppCompatActivity {
                 findViewById(R.id.app_content).setVisibility(View.VISIBLE);
                 dialog.cancel();
                 if(mViewModel.getApplist().size() > 0) {
-                    AppListAdapter mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
+                    mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
                     ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
                     recyclerView.setAdapter(mAdapter);
                 } else {
@@ -63,15 +64,20 @@ public class AppListActivity extends AppCompatActivity {
         });
         dialog.show();
         RadioGroup optionsGroup = findViewById(R.id.countryOptions);
-        int checkedButtonId = optionsGroup.getCheckedRadioButtonId();
+        optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 
-        if (checkedButtonId == R.id.all) {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == R.id.all) {
+                    mAdapter.setFilter(AppListViewModel.Country.All);
+                } else if (i == R.id.china) {
+                    mAdapter.setFilter(AppListViewModel.Country.China);
+                } else {
+                    Toast.makeText(instance, R.string.coming_soon, Toast.LENGTH_LONG).show();
+                }
 
-        } else if (checkedButtonId == R.id.china) {
-
-        } else {
-            Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_LONG).show();
-        }
+            }
+        } );
 
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
