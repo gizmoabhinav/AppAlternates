@@ -122,17 +122,7 @@ public class AppListViewModel extends ViewModel {
 
     public void fetchLatestList(PackageManager pm, IOnLoadCallback callback) {
         AppListFetcher fetcher = new AppListFetcher(applist, pm, callback);
-        //LatestFetcher fetcher = new LatestFetcher(applist, pm, callback);
         fetcher.execute();
-    }
-
-    private static boolean isPackageInstalled(String packageName, PackageManager packageManager) {
-        try {
-            packageManager.getPackageInfo(packageName, 0);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
     }
 
     private List<DetectedAppViewModel> applist = new ArrayList<>();
@@ -170,6 +160,7 @@ public class AppListViewModel extends ViewModel {
                     if (map.containsKey(pi.packageName)) {
                         detectedApp.country = Country.China;
                         detectedApp.description = map.get(pi.packageName).description;
+                        detectedApp.alternateApps = map.get(pi.packageName).alternateApps;
                         chineseApps.add(detectedApp);
                     } else {
                         nonChineseApps.add(detectedApp);
