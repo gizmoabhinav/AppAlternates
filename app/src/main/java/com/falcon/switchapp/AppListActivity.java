@@ -21,6 +21,8 @@ import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -42,8 +44,6 @@ public class AppListActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = findViewById(R.id.app_list);
 
-        // use a linear layout manager
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
         final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
@@ -63,6 +63,7 @@ public class AppListActivity extends AppCompatActivity {
             }
         });
         dialog.show();
+
         RadioGroup optionsGroup = findViewById(R.id.countryOptions);
         optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 
@@ -90,7 +91,7 @@ public class AppListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (adLoaded) {
-//            interstitialAd.show();
+            interstitialAd.show();
         } else {
             super.onBackPressed();
         }
