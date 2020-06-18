@@ -22,7 +22,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     private List<AppListViewModel.DetectedAppViewModel> originalDataSet;
     private List<AppListViewModel.DetectedAppViewModel> mDataset;
     private Activity mActivity;
-    private AppListViewModel.Country mFilterByCountry;
+    private AppListViewModel.Country mFilterByCountry = AppListViewModel.Country.All;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -64,16 +64,27 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
         } else {
             Glide.with(mActivity).load(mDataset.get(position).drawable).into((ImageView)holder.view.findViewById(R.id.image));
         }
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(
-                        "https://play.google.com/store/apps/details?id="+mDataset.get(position).id));
-                intent.setPackage("com.android.vending");
-                holder.view.getContext().startActivity(intent);
-            }
-        });
+        if (mDataset.get(position).link == null) {
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(
+                            "https://play.google.com/store/apps/details?id="+mDataset.get(position).id));
+                    intent.setPackage("com.android.vending");
+                    holder.view.getContext().startActivity(intent);
+                }
+            });
+        } else {
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mDataset.get(position).link));
+                    holder.view.getContext().startActivity(intent);
+                }
+            });
+        }
         if (mDataset.get(position).alternateApps.size() > 0) {
             holder.view.findViewById(R.id.alternate_button).setVisibility(View.VISIBLE);
             holder.view.findViewById(R.id.alternate_button).setOnClickListener(new View.OnClickListener() {
@@ -108,6 +119,14 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
                     }
                 }
             }
+            notifyDataSetChanged();
+        }
+    }
+
+    public void injectAd(int i, AppListViewModel.DetectedAppViewModel ad) {
+        originalDataSet.add(i, ad);
+        if (mFilterByCountry == AppListViewModel.Country.All) {
+            mDataset.add(i, ad);
             notifyDataSetChanged();
         }
     }

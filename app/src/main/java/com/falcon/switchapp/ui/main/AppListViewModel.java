@@ -41,6 +41,7 @@ public class AppListViewModel extends ViewModel {
         String id;
         String description;
         Country country;
+        String link;
         ArrayList<AlternateAppViewModel> alternateApps;
         DetectedAppViewModel(String id, String appName, String uri, String description){
             iconUri = uri;
@@ -48,6 +49,10 @@ public class AppListViewModel extends ViewModel {
             this.id  = id;
             this.description = description;
             alternateApps = new ArrayList<>();
+        }
+        public DetectedAppViewModel(String id, String appName, String uri, String description, String link){
+            this(id,appName,uri,description);
+            this.link = link;
         }
         DetectedAppViewModel(String id, String appName, Drawable drawable, String description){
             this.drawable = drawable;

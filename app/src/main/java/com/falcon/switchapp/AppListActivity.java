@@ -19,8 +19,12 @@ import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.ads.InMobiInterstitial;
+import com.inmobi.ads.InMobiNative;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
+import com.inmobi.ads.listeners.NativeAdEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AppListActivity extends AppCompatActivity {
@@ -30,6 +34,7 @@ public class AppListActivity extends AppCompatActivity {
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
     private AppListAdapter mAdapter;
+    private final List<InMobiNative> mNativeAds = new ArrayList<>();
 
     public static AppListActivity getInstance() {
         return instance;
@@ -82,8 +87,13 @@ public class AppListActivity extends AppCompatActivity {
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
 
-        InterstitialAdEventListener mInterstitialAdEventListener = new adListener();
-        interstitialAd = new InMobiInterstitial(AppListActivity.this, 1593117041651L, mInterstitialAdEventListener);
+        InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
+                1590307309081L, new nativeAdListener());
+        nativeAd.load();
+        mNativeAds.add(nativeAd);
+
+        interstitialAd = new InMobiInterstitial(AppListActivity.this,
+                1593117041651L, new adListener());
         interstitialAd.load();
     }
 
@@ -115,10 +125,6 @@ public class AppListActivity extends AppCompatActivity {
             Log.d("", "InMobi Init Successful");
         }
 
-        public void onAdReceived(InMobiInterstitial var1) {
-            Log.d("", "InMobi Init Successful");
-        }
-
         public void onAdClicked(InMobiInterstitial var1, Map<Object, Object> var2) {
         }
 
@@ -140,7 +146,7 @@ public class AppListActivity extends AppCompatActivity {
         }
 
         public void onRewardsUnlocked(InMobiInterstitial var1, Map<Object, Object> var2) {
-            //finish();
+            finish();
         }
 
         public void onRequestPayloadCreated(byte[] var1) {
@@ -148,5 +154,16 @@ public class AppListActivity extends AppCompatActivity {
 
         public void onRequestPayloadCreationFailed(InMobiAdRequestStatus var1) {
         }
+    }
+
+    private class nativeAdListener extends NativeAdEventListener {
+        public void onAdLoadSucceeded(InMobiNative ad, AdMetaInfo var2) {
+            mAdapter.injectAd(5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+        }
+
+        public void onAdLoadFailed(InMobiNative ad, InMobiAdRequestStatus requestStatus) {
+            Log.d("", "InMobi Init Successful");
+        }
+
     }
 }
