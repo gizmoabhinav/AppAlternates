@@ -56,7 +56,11 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         ((TextView)holder.view.findViewById(R.id.name)).setText(mDataset.get(position).name);
         ((TextView)holder.view.findViewById(R.id.description)).setText(mDataset.get(position).description);
-        Glide.with(mActivity).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
+        if (mDataset.get(position).drawable == null) {
+            Glide.with(mActivity).load(mDataset.get(position).iconUri).into((ImageView)holder.view.findViewById(R.id.image));
+        } else {
+            Glide.with(mActivity).load(mDataset.get(position).drawable).into((ImageView)holder.view.findViewById(R.id.image));
+        }
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
