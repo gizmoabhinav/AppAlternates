@@ -3,11 +3,11 @@ package com.falcon.switchapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,9 +30,6 @@ public class AppListActivity extends AppCompatActivity {
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
 
-    private static final String[] paths = {"China", "India", "USA"};
-    private int selectedCountry = 0;
-
     public static AppListActivity getInstance() {
         return instance;
     }
@@ -48,50 +45,34 @@ public class AppListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
+        final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
         mViewModel.fetchLatestList(this.getPackageManager(), new AppListViewModel.IOnLoadCallback() {
             @Override
             public void onLoad() {
+                findViewById(R.id.app_content).setVisibility(View.VISIBLE);
+                dialog.cancel();
                 if(mViewModel.getApplist().size() > 0) {
-                    // specify an adapter (see also next example)
-//                    findViewById(R.id.no_app_view).setVisibility(View.GONE);
                     AppListAdapter mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
+                    ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
                     recyclerView.setAdapter(mAdapter);
                 } else {
                     findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 }
-
             }
         });
-        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.spinner_item, paths);
+        dialog.show();
+        RadioGroup optionsGroup = findViewById(R.id.countryOptions);
+        int checkedButtonId = optionsGroup.getCheckedRadioButtonId();
 
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        spinner.setAdapter(adapter);
+        if (checkedButtonId == R.id.all) {
 
-        final View scanButtonView = findViewById(R.id.searchButton);
-        scanButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedCountry != 0) {
-                    Toast.makeText(instance, getString(R.string.coming_soon), Toast.LENGTH_LONG).show();
-                } else {
-                }
-            }
-        });
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        } else if (checkedButtonId == R.id.china) {
 
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedCountry = i;
-            }
+        } else {
+            Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_LONG).show();
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
 
