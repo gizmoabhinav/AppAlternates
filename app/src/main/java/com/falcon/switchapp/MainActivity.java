@@ -2,9 +2,12 @@ package com.falcon.switchapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,8 @@ import com.inmobi.sdk.SdkInitializationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     Activity mActivity;
@@ -58,17 +63,28 @@ public class MainActivity extends AppCompatActivity {
         mActivity = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         final View scanButtonView = findViewById(R.id.scanButton);
+        final Button translateButton = findViewById(R.id.language);
         setSupportActionBar(toolbar);
 
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
         final InMobiBanner bannerAd = findViewById(R.id.bannermain);
         bannerAd.load();
+
         scanButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                // TODO: KOKO call ad show before this.
-                bannerAd.load();
                 view.getContext().startActivity(new Intent(mActivity, AppListActivity.class));
+            }
+        });
+
+        translateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Locale.getDefault().getLanguage().equals("hi")) {
+                    restartInLocale(new Locale("en"));
+                } else {
+                    restartInLocale(new Locale("hi"));
+                }
             }
         });
 
@@ -83,6 +99,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    private void restartInLocale(Locale locale)
+    {
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        recreate();
     }
 
 }

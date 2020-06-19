@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -24,6 +25,15 @@
 
     <include layout="@layout/content_main"
         android:id="@+id/content" />
+
+    <Button
+        android:id="@+id/language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/bannermain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/appBarLayout"
+        android:text="@string/change_language"/>
 
     <com.inmobi.ads.InMobiBanner
         android:id="@+id/bannermain"

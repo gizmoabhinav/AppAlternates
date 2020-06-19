@@ -16,4 +16,5 @@
     <string name="india">India</string>
     <string name="app_summary">Total apps found: %d</string>
     <string name="scanning">Scanning…</string>
+    <string name="change_language">हिंदी में उपयोग करें</string>
 </resources>

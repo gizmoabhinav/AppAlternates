@@ -19,16 +19,17 @@
         android:layout_width="100dp"/>
 
     <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/appIcon"
-        android:layout_marginTop="72dp"
-        android:layout_marginLeft="16dp"
-        android:layout_height="100dp"
-        android:gravity="center"
         android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="72dp"
+        android:gravity="center"
+        android:text="@string/welcome_message"
         android:textColor="@color/textColor"
         android:textSize="22sp"
-        android:text="@string/welcome_message"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/appIcon"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/MainInfoText"
