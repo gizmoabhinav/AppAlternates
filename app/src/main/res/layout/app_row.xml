@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Find Alternate"
+            android:text="@string/find_alternate"
             android:textColor="#ffffff"
             android:textSize="12sp" />
     </androidx.cardview.widget.CardView>

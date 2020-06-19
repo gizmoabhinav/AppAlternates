@@ -3,9 +3,11 @@
     <string name="title_activity_main">Switch App</string>
     <string name="title_app_list_activity">List of Apps</string>
     <string name="title_alternate_activity">Alternate apps</string>
-    <string name="scan_help">Click the scan button to start scanning</string>
+    <string name="find_alternate">Find Alternate</string>
+    <string name="scan_help">Click the scan button below to start scanning</string>
     <string name="coming_soon">Coming Soon</string>
-    <string name="main_text">This app helps you get information about the apps on your device.\n You can find details about the company behind the app and also find alternate apps which have the same functionality.</string>
+    <string name="main_text">Scan your apps and get more information about its origins</string>
+    <string name="main_subtext">Find Alternative apps which perform the same functions</string>
     <string name="app_free">You have no apps from China!</string>
     <string name="welcome_message">Welcome to Switch App!</string>
     <string name="filterHintText">Show app from country</string>

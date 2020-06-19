@@ -34,14 +34,27 @@
         android:id="@+id/MainInfoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/main_text"
         android:textSize="20sp"
         android:textColor="@color/textColor"
-        app:layout_constraintTop_toTopOf="@id/appIcon" />
+        app:layout_constraintTop_toBottomOf="@id/appIcon" />
+
+    <TextView
+        android:id="@+id/MainInfoSubtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/main_subtext"
+        android:textSize="20sp"
+        android:textColor="@color/textColor"
+        app:layout_constraintTop_toBottomOf="@id/MainInfoText" />
 
     <TextView
         android:id="@+id/subtext"
@@ -54,7 +67,7 @@
         android:textColor="@color/secondaryTextColor"
         android:text="@string/scan_help"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/MainInfoText" />
+        app:layout_constraintTop_toBottomOf="@id/MainInfoSubtext" />
     <FrameLayout
         android:id="@+id/scanButton"
         android:layout_width="wrap_content"
