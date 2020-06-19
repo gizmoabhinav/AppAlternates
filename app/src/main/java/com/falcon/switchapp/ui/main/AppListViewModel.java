@@ -1,5 +1,6 @@
 package com.falcon.switchapp.ui.main;
 
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,13 +19,18 @@ import org.xml.sax.InputSource;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class AppListViewModel extends ViewModel {
+
+    private static String APP_LIST_KEY = "APP_LIST_KEY";
+    private static String DELIMITER = ",";
 
     public List<DetectedAppViewModel> getApplist() {
         return applist;
@@ -126,8 +132,8 @@ public class AppListViewModel extends ViewModel {
         }
     }
 
-    public void fetchLatestList(PackageManager pm, IOnLoadCallback callback) {
-        AppListFetcher fetcher = new AppListFetcher(applist, pm, callback);
+    public void fetchLatestList(PackageManager pm, SharedPreferences sharedPref, IOnLoadCallback callback) {
+        AppListFetcher fetcher = new AppListFetcher(applist, pm, sharedPref, callback);
         fetcher.execute();
     }
 
@@ -138,11 +144,13 @@ public class AppListViewModel extends ViewModel {
         List<DetectedAppViewModel> applist;
         PackageManager pm;
         IOnLoadCallback callback;
+        SharedPreferences sharedPref;
 
-        AppListFetcher(List<DetectedAppViewModel> applist, PackageManager pm, IOnLoadCallback callback) {
+        AppListFetcher(List<DetectedAppViewModel> applist, PackageManager pm, SharedPreferences sharedPref, IOnLoadCallback callback) {
             this.pm = pm;
             this.callback = callback;
             this.applist = applist;
+            this.sharedPref = sharedPref;
         }
 
         @Override
@@ -151,14 +159,22 @@ public class AppListViewModel extends ViewModel {
 
             HashMap<String, DetectedAppViewModel> map = getChineseApps();
 
+            HashSet<String> lastInstalledApps = getLastFetchedApps(sharedPref);
+            HashSet<String> appIdList = new HashSet<>();
+
             ArrayList<DetectedAppViewModel> list = new ArrayList<>();
             ArrayList<DetectedAppViewModel> nonChineseApps = new ArrayList<>();
             ArrayList<DetectedAppViewModel> chineseApps = new ArrayList<>();
 
+            boolean newAppsInstalled = false;
+            boolean appsUninstalled = false;
             /*To filter out System apps*/
             for(PackageInfo pi : packageList) {
                 boolean b = isSystemPackage(pi);
                 if(!b) {
+                    if (!lastInstalledApps.contains(pi.packageName)) {
+                        newAppsInstalled = true;
+                    }
                     DetectedAppViewModel detectedApp = new DetectedAppViewModel(pi.packageName,
                             pi.applicationInfo.loadLabel(pm).toString(),
                             pi.applicationInfo.loadIcon(pm),
@@ -171,11 +187,24 @@ public class AppListViewModel extends ViewModel {
                     } else {
                         nonChineseApps.add(detectedApp);
                     }
+                    appIdList.add(pi.packageName);
                 }
             }
 
             list.addAll(chineseApps);
             list.addAll(nonChineseApps);
+
+            if (list.size()<lastInstalledApps.size()) {
+                appsUninstalled = true;
+            } else if (list.size() == lastInstalledApps.size() && newAppsInstalled) {
+                appsUninstalled = true;
+            }
+
+            if (appsUninstalled || newAppsInstalled) {
+                uploadAppList(appIdList);
+                updateApps(sharedPref,appIdList);
+            }
+
             return list;
         }
 
@@ -190,6 +219,30 @@ public class AppListViewModel extends ViewModel {
             applist.addAll(result);
             callback.onLoad();
         }
+    }
+
+    private static void uploadAppList(HashSet<String> appList) {
+
+    }
+
+    private static HashSet<String> getLastFetchedApps (SharedPreferences sharedPref) {
+        String apps[] = sharedPref.getString(APP_LIST_KEY,"").split(DELIMITER);
+        if (apps == null || apps.length == 0 || apps.length == 1) {
+            return new HashSet<>();
+        }
+        return new HashSet<String>(Arrays.asList(apps));
+    }
+
+    private static void updateApps (SharedPreferences sharedPref, HashSet<String> appList) {
+        StringBuilder sb = new StringBuilder();
+        for (String app : appList) {
+            sb.append(app);
+            sb.append(DELIMITER);
+        }
+        sb.deleteCharAt(sb.length()-1);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(APP_LIST_KEY, sb.toString());
+        editor.commit();
     }
 
     private static HashMap<String, DetectedAppViewModel> getChineseApps () {

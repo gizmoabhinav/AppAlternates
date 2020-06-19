@@ -1,5 +1,7 @@
 package com.falcon.switchapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,8 @@ public class AppListActivity extends AppCompatActivity {
     private AppListAdapter mAdapter;
     private final List<InMobiNative> mNativeAds = new ArrayList<>();
 
+    private static String SHARED_PREF_KEY = "APPS_DATA";
+
     public static AppListActivity getInstance() {
         return instance;
     }
@@ -51,7 +55,8 @@ public class AppListActivity extends AppCompatActivity {
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
         final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
-        mViewModel.fetchLatestList(this.getPackageManager(), new AppListViewModel.IOnLoadCallback() {
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        mViewModel.fetchLatestList(this.getPackageManager(), sharedPref, new AppListViewModel.IOnLoadCallback() {
             @Override
             public void onLoad() {
                 findViewById(R.id.app_content).setVisibility(View.VISIBLE);
