@@ -16,5 +16,6 @@
     <string name="india">भारतीय ऐप्स</string>
     <string name="app_summary">कुल ऐप्स मिले: %d</string>
     <string name="scanning">स्कैनिंग…</string>
+    <string name="no_internet">इंटरनेट कनेक्टिविटी आवश्यक है </string>
     <string name="change_language">Use in English</string>
 </resources>

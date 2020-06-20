@@ -2,8 +2,10 @@ package com.falcon.switchapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +30,11 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    Activity mActivity;
+    static int mNetworkStatus;
+    MainActivity mActivity;
+    NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
+
+    InMobiBanner bannerAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +73,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-        final InMobiBanner bannerAd = findViewById(R.id.bannermain);
-        bannerAd.load();
+        bannerAd = findViewById(R.id.bannermain);
+        mNetworkStatus = NetworkUtil.getConnectivityStatusString(this);
+        if (mNetworkStatus == NetworkUtil.TYPE_WIFI || mNetworkStatus == NetworkUtil.TYPE_MOBILE) {
+            bannerAd.load();
+        }
 
         scanButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                view.getContext().startActivity(new Intent(mActivity, AppListActivity.class));
+                if (mNetworkStatus == NetworkUtil.TYPE_NOT_CONNECTED) {
+                    Toast.makeText(MainActivity.this, getText(R.string.no_internet), Toast.LENGTH_SHORT).show();
+                } else {
+                    view.getContext().startActivity(new Intent(mActivity, AppListActivity.class));
+                }
             }
         });
 
@@ -110,6 +123,30 @@ public class MainActivity extends AppCompatActivity {
         Resources resources = getResources();
         resources.updateConfiguration(config, resources.getDisplayMetrics());
         recreate();
+    }
+
+    public void onNetworkStatusChanged(int networkStatus) {
+        if (networkStatus == NetworkUtil.TYPE_WIFI || networkStatus == NetworkUtil.TYPE_MOBILE) {
+            if (bannerAd != null && networkStatus != mNetworkStatus) {
+                bannerAd.load();
+            }
+        }
+        mNetworkStatus = networkStatus;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        this.registerReceiver(networkChangeReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        this.unregisterReceiver(networkChangeReceiver);
+        super.onPause();
     }
 
 }

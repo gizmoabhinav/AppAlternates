@@ -3,24 +3,24 @@ package com.falcon.switchapp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
+
+    MainActivity activity;
+
+    NetworkChangeReceiver(MainActivity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
         int status = NetworkUtil.getConnectivityStatusString(context);
-        Log.e("network reciever", "network change");
-        if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-            if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
-                try{
-                    AppListActivity.getInstance().loadAd();
-                } catch (Exception e) {
-
-                }
-            } else {
-
+        if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction()) ||
+                "android.net.wifi.WIFI_STATE_CHANGED".equals(intent.getAction()) ||
+                "android.net.wifi.supplicant.STATE_CHANGE".equals(intent.getAction())) {
+            if (activity != null) {
+                activity.onNetworkStatusChanged(status);
             }
         }
     }
