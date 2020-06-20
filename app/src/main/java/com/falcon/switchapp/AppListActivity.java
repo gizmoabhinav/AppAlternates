@@ -55,6 +55,7 @@ public class AppListActivity extends AppCompatActivity {
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
         final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
+        dialog.show();
         SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         mViewModel.fetchLatestList(this.getPackageManager(), sharedPref, new AppListViewModel.IOnLoadCallback() {
             @Override
@@ -71,7 +72,6 @@ public class AppListActivity extends AppCompatActivity {
                 }
             }
         });
-        dialog.show();
 
         RadioGroup optionsGroup = findViewById(R.id.countryOptions);
         optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){

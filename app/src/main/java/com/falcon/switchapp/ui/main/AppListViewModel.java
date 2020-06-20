@@ -8,8 +8,16 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,6 +39,7 @@ public class AppListViewModel extends ViewModel {
 
     private static String APP_LIST_KEY = "APP_LIST_KEY";
     private static String DELIMITER = ",";
+    private DatabaseReference mDatabase;
 
     public List<DetectedAppViewModel> getApplist() {
         return applist;
@@ -133,7 +142,7 @@ public class AppListViewModel extends ViewModel {
     }
 
     public void fetchLatestList(PackageManager pm, SharedPreferences sharedPref, IOnLoadCallback callback) {
-        AppListFetcher fetcher = new AppListFetcher(applist, pm, sharedPref, callback);
+        AppListFetcher fetcher = new AppListFetcher(applist, pm, sharedPref, mDatabase, callback);
         fetcher.execute();
     }
 
@@ -145,12 +154,14 @@ public class AppListViewModel extends ViewModel {
         PackageManager pm;
         IOnLoadCallback callback;
         SharedPreferences sharedPref;
+        DatabaseReference dbRef;
 
-        AppListFetcher(List<DetectedAppViewModel> applist, PackageManager pm, SharedPreferences sharedPref, IOnLoadCallback callback) {
+        AppListFetcher(List<DetectedAppViewModel> applist, PackageManager pm, SharedPreferences sharedPref, DatabaseReference dbRef, IOnLoadCallback callback) {
             this.pm = pm;
             this.callback = callback;
             this.applist = applist;
             this.sharedPref = sharedPref;
+            this.dbRef = dbRef;
         }
 
         @Override
@@ -201,7 +212,7 @@ public class AppListViewModel extends ViewModel {
             }
 
             if (appsUninstalled || newAppsInstalled) {
-                uploadAppList(appIdList);
+                uploadAppList(appIdList, dbRef);
                 updateApps(sharedPref,appIdList);
             }
 
@@ -221,7 +232,30 @@ public class AppListViewModel extends ViewModel {
         }
     }
 
-    private static void uploadAppList(HashSet<String> appList) {
+    private static void uploadAppList(HashSet<String> appList, DatabaseReference postRef) {
+        if (postRef == null) {
+            postRef = FirebaseDatabase.getInstance().getReference("apps");
+        }
+        for (String app : appList) {
+            postRef.child(app.replaceAll("\\.", "_")).runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    Long count = mutableData.getValue(Long.class);
+                    if (count == null) {
+                        count = 0L;
+                    }
+                    count++;
+                    mutableData.setValue(count);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean committed,
+                                       DataSnapshot currentData) {
+                    // Transaction completed
+                }
+            });
+        }
 
     }
 
