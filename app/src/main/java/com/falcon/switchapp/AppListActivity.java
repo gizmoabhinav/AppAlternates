@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.falcon.switchapp.ui.main.AppListAdapter;
 import com.falcon.switchapp.ui.main.AppListViewModel;
+import com.google.android.gms.ads.formats.NativeAd;
 import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
@@ -36,7 +37,10 @@ public class AppListActivity extends AppCompatActivity {
     private static AppListActivity instance;
     private AppListViewModel mViewModel;
     private AppListAdapter mAdapter;
+    private Integer mLastNativeAdLocation = -1;
+    private NativeAdEventListener mNativeAdListener;
     private final List<InMobiNative> mNativeAds = new ArrayList<>();
+    private final List<InMobiNative> mLoadedNativeAds = new ArrayList<>();
 
     private static String SHARED_PREF_KEY = "APPS_DATA";
 
@@ -57,6 +61,7 @@ public class AppListActivity extends AppCompatActivity {
         final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
         dialog.show();
         SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        mNativeAdListener = new nativeAdListener();
         mViewModel.fetchLatestList(this.getPackageManager(), sharedPref, new AppListViewModel.IOnLoadCallback() {
             @Override
             public void onLoad() {
@@ -66,6 +71,16 @@ public class AppListActivity extends AppCompatActivity {
                     mAdapter = new AppListAdapter(mViewModel.getApplist(), instance);
                     ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
                     recyclerView.setAdapter(mAdapter);
+                    if (mLoadedNativeAds.size()>0) {
+                        synchronized (mLastNativeAdLocation) {
+                            for (InMobiNative ad : mLoadedNativeAds) {
+                                if (mAdapter.getItemCount() > mLastNativeAdLocation+5) {
+                                    mAdapter.injectAd(mLastNativeAdLocation+5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+                                    mLastNativeAdLocation+=5;
+                                }
+                            }
+                        }
+                    }
                 } else {
                     findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
@@ -89,13 +104,16 @@ public class AppListActivity extends AppCompatActivity {
             }
         } );
 
+
+        for (int i=0;i<8;i++) {
+            InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
+                    1590307309081L, mNativeAdListener);
+            nativeAd.load();
+            mNativeAds.add(nativeAd);
+        }
+
         InMobiBanner bannerAd = findViewById(R.id.banner);
         bannerAd.load();
-
-        InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
-                1590307309081L, new nativeAdListener());
-        nativeAd.load();
-        mNativeAds.add(nativeAd);
 
         interstitialAd = new InMobiInterstitial(AppListActivity.this,
                 1593117041651L, new adListener());
@@ -162,8 +180,16 @@ public class AppListActivity extends AppCompatActivity {
     }
 
     private class nativeAdListener extends NativeAdEventListener {
+
         public void onAdLoadSucceeded(InMobiNative ad, AdMetaInfo var2) {
-            mAdapter.injectAd(5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+            synchronized (mLastNativeAdLocation) {
+                if (mAdapter != null && mAdapter.getItemCount() > mLastNativeAdLocation+5) {
+                    mAdapter.injectAd(mLastNativeAdLocation+5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+                    mLastNativeAdLocation += 5;
+                } else if (mAdapter == null) {
+                    mLoadedNativeAds.add(ad);
+                }
+            }
         }
 
         public void onAdLoadFailed(InMobiNative ad, InMobiAdRequestStatus requestStatus) {
