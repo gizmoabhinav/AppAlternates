@@ -74,9 +74,6 @@
         <activity
             android:name=".AppListActivity"
             android:label="@string/title_app_list_activity" />
-        <activity
-            android:name=".AppAlternateListActivity"
-            android:label="@string/title_alternate_activity" />
     </application>
 
 </manifest>

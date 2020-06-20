@@ -50,6 +50,7 @@
         android:text="more blah blah blah blah blah blah blahjhdfkhe  bakhd akuf jegfu eyjwgr bvcyje"/>
 
     <androidx.cardview.widget.CardView
+        android:visibility="gone"
         android:id="@+id/alternate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

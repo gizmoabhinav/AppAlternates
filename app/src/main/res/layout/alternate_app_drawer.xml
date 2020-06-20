@@ -17,6 +17,7 @@
         android:orientation="horizontal"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingTop="30dp"
         android:id="@+id/alter_app_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"

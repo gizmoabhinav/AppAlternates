@@ -26,14 +26,30 @@
     <include layout="@layout/content_main"
         android:id="@+id/content" />
 
-    <Button
-        android:id="@+id/language"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.cardview.widget.CardView
         app:layout_constraintBottom_toTopOf="@+id/bannermain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/appBarLayout"
-        android:text="@string/change_language"/>
+        android:id="@+id/language"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        android:layout_margin="8dp"
+        android:backgroundTint="#fafafa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_language"
+            android:textColor="@color/textColor"
+            android:textSize="16sp"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/appIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.cardview.widget.CardView>
 
     <com.inmobi.ads.InMobiBanner
         android:id="@+id/bannermain"

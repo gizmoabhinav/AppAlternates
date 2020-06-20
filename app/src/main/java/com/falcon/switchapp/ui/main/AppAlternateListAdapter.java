@@ -44,7 +44,7 @@ public class AppAlternateListAdapter extends RecyclerView.Adapter<AppAlternateLi
                                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.app_alternate_row, parent, false);
+                .inflate(R.layout.app_row, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }

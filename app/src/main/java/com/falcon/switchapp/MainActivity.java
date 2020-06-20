@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity  implements INetworkDependen
         mActivity = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         final View scanButtonView = findViewById(R.id.scanButton);
-        final Button translateButton = findViewById(R.id.language);
+        final View translateButton = findViewById(R.id.language);
         setSupportActionBar(toolbar);
 
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
