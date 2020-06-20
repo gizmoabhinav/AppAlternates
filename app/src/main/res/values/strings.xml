@@ -18,4 +18,5 @@
     <string name="scanning">Scanning…</string>
     <string name="no_internet">Internet connectivity required</string>
     <string name="change_language">हिंदी में उपयोग करें</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>

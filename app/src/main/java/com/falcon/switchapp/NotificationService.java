@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -12,12 +14,23 @@ import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.concurrent.ExecutionException;
 
 public class NotificationService  extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private static final String SHARED_PREF_KEY = "NEWS_DATA";
+    private static final String NEWS_KEY_PREFIX = "NEWS_KEY_";
+    private static final String NEWS_TITLE_KEY_SUFFIX = "_TITLE";
+    private static final String NEWS_IMAGE_KEY_SUFFIX = "_IMAGE";
+    private static final String NEWS_CONTENT_KEY_SUFFIX = "_CONTENT";
+    private static final String NEWS_COUNT_KEY = "NEWS_COUNT_KEY";
+    private SharedPreferences sharedPref;
 
     /**
      * Called when message is received.
@@ -53,9 +66,15 @@ public class NotificationService  extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-            sendNotification(remoteMessage.getNotification().getBody());
+            sharedPref = this.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            int newsCount = sharedPref.getInt(NEWS_COUNT_KEY,0);
+            editor.putString(NEWS_KEY_PREFIX+String.valueOf(newsCount)+NEWS_TITLE_KEY_SUFFIX, remoteMessage.getNotification().getTitle());
+            editor.putString(NEWS_KEY_PREFIX+String.valueOf(newsCount)+NEWS_IMAGE_KEY_SUFFIX, remoteMessage.getNotification().getImageUrl().toString());
+            editor.putString(NEWS_KEY_PREFIX+String.valueOf(newsCount)+NEWS_CONTENT_KEY_SUFFIX, remoteMessage.getNotification().getBody());
+            editor.putInt(NEWS_COUNT_KEY, newsCount+1);
+            editor.commit();
+            sendNotification(remoteMessage.getNotification());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -104,9 +123,9 @@ public class NotificationService  extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+     * @param notif FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(RemoteMessage.Notification notif) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -114,14 +133,26 @@ public class NotificationService  extends FirebaseMessagingService {
 
         String channelId = "switchapp";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_notif)
-                        .setContentTitle("Title")
-                        .setContentText(messageBody)
+                        .setContentTitle(notif.getTitle())
+                        .setContentText(notif.getBody())
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
+        try {
+            Bitmap image = Glide.with(this).asBitmap().load(notif.getImageUrl()).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(image));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
