@@ -167,7 +167,8 @@ public class AppListViewModel extends ViewModel {
         protected List<DetectedAppViewModel> doInBackground(Object... objects) {
             List<PackageInfo> packageList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS);
 
-            HashMap<String, DetectedAppViewModel> map = getChineseApps();
+            HashMap<String, DetectedAppViewModel> chineseAppsMap = getAppsFromCountry(Country.China);
+            HashMap<String, DetectedAppViewModel> indianAppsMap = getAppsFromCountry(Country.India);
 
             HashSet<String> lastInstalledApps = getLastFetchedApps(sharedPref);
             HashSet<String> appIdList = new HashSet<>();
@@ -189,12 +190,16 @@ public class AppListViewModel extends ViewModel {
                             pi.applicationInfo.loadLabel(pm).toString(),
                             pi.applicationInfo.loadIcon(pm),
                             "");
-                    if (map.containsKey(pi.packageName)) {
+                    if (chineseAppsMap.containsKey(pi.packageName)) {
                         detectedApp.country = Country.China;
-                        detectedApp.description = map.get(pi.packageName).description;
-                        detectedApp.alternateApps = map.get(pi.packageName).alternateApps;
+                        detectedApp.description = chineseAppsMap.get(pi.packageName).description;
+                        detectedApp.alternateApps = chineseAppsMap.get(pi.packageName).alternateApps;
                         chineseApps.add(detectedApp);
                     } else {
+                        if (indianAppsMap.containsKey(pi.packageName)) {
+                            detectedApp.country = Country.India;
+                            detectedApp.description = indianAppsMap.get(pi.packageName).description;
+                        }
                         nonChineseApps.add(detectedApp);
                     }
                     appIdList.add(pi.packageName);
@@ -278,11 +283,16 @@ public class AppListViewModel extends ViewModel {
         editor.commit();
     }
 
-    private static HashMap<String, DetectedAppViewModel> getChineseApps () {
+    private static HashMap<String, DetectedAppViewModel> getAppsFromCountry(Country country) {
         String uri = "https://gizmoabhinav.github.io";
         HashMap<String, DetectedAppViewModel> list = new HashMap<>();
         try {
-            URL url = new URL(uri + "/apps.xml");
+            URL url = null;
+            if (country == Country.China) {
+                url = new URL(uri + "/apps.xml");
+            }  else if (country == Country.India) {
+                url = new URL(uri + "/apps_in.xml");
+            }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new InputSource(url.openStream()));

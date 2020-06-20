@@ -141,6 +141,8 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
                     mAdapter.setFilter(AppListViewModel.Country.All);
                 } else if (i == R.id.china) {
                     mAdapter.setFilter(AppListViewModel.Country.China);
+                } else if (i == R.id.india) {
+                    mAdapter.setFilter(AppListViewModel.Country.India);
                 } else {
                     Toast.makeText(instance, R.string.coming_soon, Toast.LENGTH_LONG).show();
                 }
