@@ -6,9 +6,9 @@ import android.content.Intent;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
-    MainActivity activity;
+    INetworkDependentActivity activity;
 
-    NetworkChangeReceiver(MainActivity activity) {
+    NetworkChangeReceiver(INetworkDependentActivity activity) {
         this.activity = activity;
     }
 

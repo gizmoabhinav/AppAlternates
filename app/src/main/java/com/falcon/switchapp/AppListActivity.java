@@ -1,7 +1,9 @@
 package com.falcon.switchapp;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.falcon.switchapp.ui.main.AppListAdapter;
 import com.falcon.switchapp.ui.main.AppListViewModel;
-import com.google.android.gms.ads.formats.NativeAd;
 import com.inmobi.ads.AdMetaInfo;
 import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AppListActivity extends AppCompatActivity {
+public class AppListActivity extends AppCompatActivity implements INetworkDependentActivity{
 
     private InMobiInterstitial interstitialAd;
     private boolean adLoaded = false;
@@ -41,6 +42,9 @@ public class AppListActivity extends AppCompatActivity {
     private NativeAdEventListener mNativeAdListener;
     private final List<InMobiNative> mNativeAds = new ArrayList<>();
     private final List<InMobiNative> mLoadedNativeAds = new ArrayList<>();
+    private InMobiBanner bannerAd;
+    private int mNetworkStatus;
+    NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
 
     private static String SHARED_PREF_KEY = "APPS_DATA";
 
@@ -55,6 +59,10 @@ public class AppListActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        bannerAd = findViewById(R.id.banner);
+
+        interstitialAd = new InMobiInterstitial(AppListActivity.this,
+                1593117041651L, new adListener());
 
         instance = this;
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
@@ -104,20 +112,17 @@ public class AppListActivity extends AppCompatActivity {
             }
         } );
 
-
-        for (int i=0;i<8;i++) {
-            InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
-                    1590307309081L, mNativeAdListener);
-            nativeAd.load();
-            mNativeAds.add(nativeAd);
+        // load ads
+        if (mNetworkStatus == NetworkUtil.TYPE_WIFI || mNetworkStatus == NetworkUtil.TYPE_MOBILE) {
+            for (int i=0;i<8;i++) {
+                InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
+                        1590307309081L, mNativeAdListener);
+                nativeAd.load();
+                mNativeAds.add(nativeAd);
+            }
+            bannerAd.load();
+            interstitialAd.load();
         }
-
-        InMobiBanner bannerAd = findViewById(R.id.banner);
-        bannerAd.load();
-
-        interstitialAd = new InMobiInterstitial(AppListActivity.this,
-                1593117041651L, new adListener());
-        interstitialAd.load();
     }
 
     @Override
@@ -196,5 +201,32 @@ public class AppListActivity extends AppCompatActivity {
             Log.d("", "InMobi Init Successful");
         }
 
+    }
+
+    public void onNetworkStatusChanged(int networkStatus) {
+        if (networkStatus == NetworkUtil.TYPE_WIFI || networkStatus == NetworkUtil.TYPE_MOBILE) {
+            if (bannerAd != null && networkStatus != mNetworkStatus) {
+                bannerAd.load();
+            }
+            if (interstitialAd != null && networkStatus != mNetworkStatus) {
+                interstitialAd.load();
+            }
+        }
+        mNetworkStatus = networkStatus;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        this.registerReceiver(networkChangeReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        this.unregisterReceiver(networkChangeReceiver);
+        super.onPause();
     }
 }

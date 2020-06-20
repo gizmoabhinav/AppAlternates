@@ -29,7 +29,7 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements INetworkDependentActivity{
     static int mNetworkStatus;
     MainActivity mActivity;
     NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
