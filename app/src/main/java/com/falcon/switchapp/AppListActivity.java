@@ -225,7 +225,7 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
     }
 
     private void setFilterOrShowShareView(AppListViewModel.Country country) {
-        int itemCount = mAdapter.setFilter(AppListViewModel.Country.All);
+        int itemCount = mAdapter.setFilter(country);
         if (country != AppListViewModel.Country.All && country != AppListViewModel.Country.India && itemCount == 0) {
             findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);

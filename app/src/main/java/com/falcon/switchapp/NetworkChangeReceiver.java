@@ -8,6 +8,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     INetworkDependentActivity activity;
 
+    public  NetworkChangeReceiver() {}
+
     NetworkChangeReceiver(INetworkDependentActivity activity) {
         this.activity = activity;
     }
