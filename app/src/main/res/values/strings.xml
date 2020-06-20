@@ -8,7 +8,7 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="main_text">Scan your apps and get more information about its origins. Find Alternative apps which perform the same functions.</string>
     <string name="app_free">Congratulations!! You have no apps from China.</string>
-    <string name="share">Tell you friends</string>
+    <string name="share">Tell your friends</string>
     <string name="rate">Rate us on Play Store</string>
     <string name="welcome_message">Welcome to Switch App!</string>
     <string name="filterHintText">Show app from country</string>
@@ -19,5 +19,6 @@
     <string name="scanning">Scanning…</string>
     <string name="no_internet">Internet connectivity required</string>
     <string name="change_language">हिंदी में उपयोग करें</string>
+    <string name="share_caption">Hi! I have detected and switched all the app from China using SwitchApp. \nTry it now… https://play.google.com/store/apps/details?id=com.falcon.switchapp</string>
     <string name="title_activity_news">NewsActivity</string>
 </resources>

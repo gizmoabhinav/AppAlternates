@@ -207,7 +207,7 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
             sendIntent.setType("image/png");
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi! I have detected and switched all the app from China using SwitchApp.\n Try it now... https://play.google.com/store/apps/details?id=com.falcon.switchapp");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_caption));
             startActivity(Intent.createChooser(sendIntent, null));
 
         } catch (Exception e) {
@@ -226,10 +226,8 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
 
     private void setFilterOrShowShareView(AppListViewModel.Country country) {
         int itemCount = mAdapter.setFilter(AppListViewModel.Country.All);
-        if (country != AppListViewModel.Country.All && country != AppListViewModel.Country.India) {
+        if (country != AppListViewModel.Country.All && country != AppListViewModel.Country.India && itemCount == 0) {
             findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.noAppText)).setText(getString(R.string.app_free));
-
             recyclerView.setVisibility(View.GONE);
         } else {
             findViewById(R.id.no_app_view).setVisibility(View.GONE);

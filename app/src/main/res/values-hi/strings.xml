@@ -15,9 +15,10 @@
     <string name="scanning">स्कैनिंग…</string>
     <string name="no_internet">इंटरनेट कनेक्टिविटी आवश्यक है </string>
     <string name="change_language">Use in English</string>
-    <string name="share">Tell you friends</string>
-    <string name="rate">Rate us on Play Store</string>
-    <string name="main_text">Scan your apps and get more information about its origins. Find Alternative apps which perform the same functions.</string>
-    <string name="app_free">Congratulations!! You have no apps from %s.</string>
+    <string name="share">अपने दोस्तों को बताएँ</string>
+    <string name="rate">हमें Play Store पर रेट करें</string>
+    <string name="main_text">अपने ऐप्स को स्कैन करें और इसकी उत्पत्ति के बारे में अधिक जानकारी प्राप्त करें। वैकल्पिक एप्लिकेशन खोजें जो समान कार्य करते हैं।</string>
+    <string name="app_free">बधाई हो!! आपके पास चीन से कोई एप्लिकेशन नहीं है।</string>
+    <string name="share_caption">नमस्ते! मैंने स्विचएप का उपयोग करके चीन से सभी ऐप का पता लगाया है और स्विच किया है। \nइसे अभी आज़माएं ... https://play.google.com/store/apps/details?id=com.falcon.switchapp</string>
     <string name="title_activity_news">NewsActivity</string>
 </resources>
