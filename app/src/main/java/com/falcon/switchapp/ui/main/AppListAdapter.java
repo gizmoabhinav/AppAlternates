@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.falcon.switchapp.AppAlternateListActivity;
 import com.falcon.switchapp.R;
 
 import java.util.ArrayList;
@@ -23,24 +22,30 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
     private List<AppListViewModel.DetectedAppViewModel> mDataset;
     private Activity mActivity;
     private AppListViewModel.Country mFilterByCountry = AppListViewModel.Country.All;
+    private IButtonClickAction clickAction;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public View view;
-        public MyViewHolder(View v) {
+        View view;
+        MyViewHolder(View v) {
             super(v);
             view = v;
         }
     }
 
+    public interface IButtonClickAction {
+        void onAlternateButtonClicked(ArrayList<AppListViewModel.AlternateAppViewModel> alternateApps);
+    }
+
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AppListAdapter(List<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity) {
+    public AppListAdapter(List<AppListViewModel.DetectedAppViewModel> myDataset, Activity activity, IButtonClickAction action) {
         originalDataSet = myDataset;
         mDataset = new ArrayList<>(originalDataSet);
         mActivity = activity;
+        clickAction = action;
     }
 
     // Create new views (invoked by the layout manager)
@@ -90,9 +95,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
             holder.view.findViewById(R.id.alternate_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mActivity, AppAlternateListActivity.class);
-                    intent.putParcelableArrayListExtra("alternateApps", mDataset.get(position).alternateApps);
-                    mActivity.startActivity(intent);
+                    clickAction.onAlternateButtonClicked(mDataset.get(position).alternateApps);
                 }
             });
         } else {
