@@ -1,6 +1,5 @@
 package com.falcon.switchapp.ui.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -18,24 +17,22 @@ import java.util.List;
 
 public class AppAlternateListAdapter extends RecyclerView.Adapter<AppAlternateListAdapter.MyViewHolder> {
     private List<AppListViewModel.AlternateAppViewModel> mDataset;
-    private Activity mActivity;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public View view;
-        public MyViewHolder(View v) {
+        View view;
+        MyViewHolder(View v) {
             super(v);
             view = v;
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AppAlternateListAdapter(List<AppListViewModel.AlternateAppViewModel> myDataset, Activity activity) {
+    public AppAlternateListAdapter(List<AppListViewModel.AlternateAppViewModel> myDataset) {
         mDataset = myDataset;
-        mActivity = activity;
     }
 
     // Create new views (invoked by the layout manager)

@@ -6,9 +6,6 @@
     <string name="find_alternate">वैकल्पिक खोजें</string>
     <string name="scan_help">स्कैनिंग शुरू करने के लिए नीचे दिए गए स्कैन बटन पर क्लिक करें</string>
     <string name="coming_soon">जल्द आ रहा है</string>
-    <string name="main_text">अपने ऐप्स को स्कैन करें और इसकी उत्पत्ति के बारे में अधिक जानकारी प्राप्त करें</string>
-    <string name="main_subtext">वैकल्पिक एप्लिकेशन खोजें जो समान कार्य करते हैं</string>
-    <string name="app_free">आपके पास चीन से कोई एप्लिकेशन नहीं है!</string>
     <string name="welcome_message">स्विच ऐप में आपका स्वागत है!</string>
     <string name="filterHintText">देश से ऐप दिखाएं</string>
     <string name="all">सभी ऐप्स</string>
@@ -18,4 +15,9 @@
     <string name="scanning">स्कैनिंग…</string>
     <string name="no_internet">इंटरनेट कनेक्टिविटी आवश्यक है </string>
     <string name="change_language">Use in English</string>
+    <string name="share">Tell you friends</string>
+    <string name="rate">Rate us on Play Store</string>
+    <string name="main_text">Scan your apps and get more information about its origins. Find Alternative apps which perform the same functions.</string>
+    <string name="app_free">Congratulations!! You have no apps from %s.</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>

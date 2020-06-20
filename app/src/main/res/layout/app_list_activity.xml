@@ -18,6 +18,13 @@
 
         <include layout="@layout/filter_option_view" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/SummaryViewGuideline"
+            app:layout_constraintGuide_percent=".38"
+            android:orientation="horizontal"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/app_list"
             android:layout_width="match_parent"
@@ -26,7 +33,9 @@
             android:layout_marginTop="16dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchView" />
+            app:layout_constraintTop_toBottomOf="@id/SummaryViewGuideline" />
+
+        <include layout="@layout/no_app_detected" />
 
         <com.inmobi.ads.InMobiBanner
             android:id="@+id/banner"

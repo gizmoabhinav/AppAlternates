@@ -109,7 +109,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
         return mDataset.size();
     }
 
-    public void setFilter(AppListViewModel.Country country)  {
+    public int setFilter(AppListViewModel.Country country)  {
         if(country != mFilterByCountry) {
             mFilterByCountry = country;
             mDataset.clear();
@@ -124,6 +124,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.MyViewHo
             }
             notifyDataSetChanged();
         }
+        return mDataset.size();
     }
 
     public void injectAd(int i, AppListViewModel.DetectedAppViewModel ad) {

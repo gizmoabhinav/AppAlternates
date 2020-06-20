@@ -1,10 +1,15 @@
 package com.falcon.switchapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +36,14 @@ import com.inmobi.ads.InMobiNative;
 import com.inmobi.ads.listeners.InterstitialAdEventListener;
 import com.inmobi.ads.listeners.NativeAdEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class AppListActivity extends AppCompatActivity implements INetworkDependentActivity{
+public class AppListActivity extends AppCompatActivity implements INetworkDependentActivity {
 
     private InMobiInterstitial interstitialAd;
     private boolean adLoaded = false;
@@ -49,9 +58,7 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
     private int mNetworkStatus;
     NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
     private BottomSheetBehavior sheetBehavior;
-    private View bottom_sheet;
-
-    private static String SHARED_PREF_KEY = "APPS_DATA";
+    RecyclerView recyclerView;
 
     public static AppListActivity getInstance() {
         return instance;
@@ -62,7 +69,7 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_list_activity);
 
-        bottom_sheet = findViewById(R.id.alternateApp);
+        View bottom_sheet = findViewById(R.id.alternateApp);
         bottom_sheet.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -80,10 +87,26 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
                 alternateAppView.setAdapter(null);
             }
         });
-        final RecyclerView recyclerView = findViewById(R.id.app_list);
+
+        findViewById(R.id.rate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.falcon.switchapp"));
+                intent.setPackage("com.android.vending");
+                instance.startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareScreenshot();
+            }
+        });
+
+        recyclerView = findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
 
         bannerAd = findViewById(R.id.banner);
 
@@ -94,6 +117,7 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
         mViewModel = ViewModelProviders.of(this).get(AppListViewModel.class);
         final AlertDialog dialog = new AlertDialog.Builder(this).setView(R.layout.loading_page).setCancelable(false).create();
         dialog.show();
+        String SHARED_PREF_KEY = "APPS_DATA";
         SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         mNativeAdListener = new nativeAdListener();
         mViewModel.fetchLatestList(this.getPackageManager(), sharedPref, new AppListViewModel.IOnLoadCallback() {
@@ -101,26 +125,26 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
             public void onLoad() {
                 findViewById(R.id.app_content).setVisibility(View.VISIBLE);
                 dialog.cancel();
-                if(mViewModel.getApplist().size() > 0) {
+                if (mViewModel.getApplist().size() > 0) {
                     mAdapter = new AppListAdapter(mViewModel.getApplist(), instance, new AppListAdapter.IButtonClickAction() {
                         @Override
                         public void onAlternateButtonClicked(ArrayList<AppListViewModel.AlternateAppViewModel> alternateApps) {
                             if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                                 sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                                 // specify an adapter (see also next example)
-                                AppAlternateListAdapter mAdapter = new AppAlternateListAdapter(alternateApps, instance);
+                                AppAlternateListAdapter mAdapter = new AppAlternateListAdapter(alternateApps);
                                 alternateAppView.setAdapter(mAdapter);
                             }
                         }
                     });
-                    ((TextView)findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
+                    ((TextView) findViewById(R.id.scannedSummaryText)).setText(String.format(instance.getString(R.string.app_summary), mAdapter.getItemCount()));
                     recyclerView.setAdapter(mAdapter);
-                    if (mLoadedNativeAds.size()>0) {
+                    if (mLoadedNativeAds.size() > 0) {
                         synchronized (mLastNativeAdLocation) {
                             for (InMobiNative ad : mLoadedNativeAds) {
-                                if (mAdapter.getItemCount() > mLastNativeAdLocation+5) {
-                                    mAdapter.injectAd(mLastNativeAdLocation+5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
-                                    mLastNativeAdLocation+=5;
+                                if (mAdapter.getItemCount() > mLastNativeAdLocation + 5) {
+                                    mAdapter.injectAd(mLastNativeAdLocation + 5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+                                    mLastNativeAdLocation += 5;
                                 }
                             }
                         }
@@ -133,26 +157,26 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
         });
 
         RadioGroup optionsGroup = findViewById(R.id.countryOptions);
-        optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        optionsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.all) {
-                    mAdapter.setFilter(AppListViewModel.Country.All);
+                    setFilterOrShowShareView(AppListViewModel.Country.All);
                 } else if (i == R.id.china) {
-                    mAdapter.setFilter(AppListViewModel.Country.China);
+                    setFilterOrShowShareView(AppListViewModel.Country.China);
                 } else if (i == R.id.india) {
-                    mAdapter.setFilter(AppListViewModel.Country.India);
+                    setFilterOrShowShareView(AppListViewModel.Country.India);
                 } else {
                     Toast.makeText(instance, R.string.coming_soon, Toast.LENGTH_LONG).show();
                 }
 
             }
-        } );
+        });
 
         // load ads
         if (mNetworkStatus == NetworkUtil.TYPE_WIFI || mNetworkStatus == NetworkUtil.TYPE_MOBILE) {
-            for (int i=0;i<8;i++) {
+            for (int i = 0; i < 8; i++) {
                 InMobiNative nativeAd = new InMobiNative(AppListActivity.this,
                         1590307309081L, mNativeAdListener);
                 nativeAd.load();
@@ -160,6 +184,56 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
             }
             bannerAd.load();
             interstitialAd.load();
+        }
+    }
+
+    private void shareScreenshot() {
+        try {
+            // create bitmap screen capture
+            View shareView  = findViewById(R.id.shareView);
+            shareView.setVisibility(View.VISIBLE);
+            Bitmap bitmap = screenShot(shareView);
+            shareView.setVisibility(View.GONE);
+            File imagesFolder = new File(getCacheDir(), "images");
+            imagesFolder.mkdirs();
+            File file = new File(imagesFolder, "shared_image.png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            Uri uri = FileProvider.getUriForFile(this, "com.falcon.switchapp.fileprovider", file);
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            sendIntent.setType("image/png");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi! I have detected and switched all the app from China using SwitchApp.\n Try it now... https://play.google.com/store/apps/details?id=com.falcon.switchapp");
+            startActivity(Intent.createChooser(sendIntent, null));
+
+        } catch (Exception e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+
+    private Bitmap screenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    private void setFilterOrShowShareView(AppListViewModel.Country country) {
+        int itemCount = mAdapter.setFilter(AppListViewModel.Country.All);
+        if (country != AppListViewModel.Country.All && country != AppListViewModel.Country.India) {
+            findViewById(R.id.no_app_view).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.noAppText)).setText(getString(R.string.app_free));
+
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.no_app_view).setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -226,8 +300,8 @@ public class AppListActivity extends AppCompatActivity implements INetworkDepend
 
         public void onAdLoadSucceeded(InMobiNative ad, AdMetaInfo var2) {
             synchronized (mLastNativeAdLocation) {
-                if (mAdapter != null && mAdapter.getItemCount() > mLastNativeAdLocation+5) {
-                    mAdapter.injectAd(mLastNativeAdLocation+5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
+                if (mAdapter != null && mAdapter.getItemCount() > mLastNativeAdLocation + 5) {
+                    mAdapter.injectAd(mLastNativeAdLocation + 5, new AppListViewModel.DetectedAppViewModel("ad", ad.getAdTitle(), ad.getAdIconUrl(), ad.getAdDescription(), ad.getAdLandingPageUrl()));
                     mLastNativeAdLocation += 5;
                 } else if (mAdapter == null) {
                     mLoadedNativeAds.add(ad);
